@@ -243,66 +243,53 @@
     {
       "tag": "🇭🇰 香港节点",
       "type": "selector",
-      "outbounds": [
-        "{all}"
-      ],
-      "filter": [
+      "outbounds": ["{all}"],
+      "rules": [
         {
-          "action": "include",
-          "keywords": [
-            "🇭🇰|HK|hk|香港|港|HongKong"
-          ]
+          "type": "inbound_tags",
+          "inbound_tags": ["🇭🇰|HK|hk|香港|港|HongKong"],
+          "action": "add"
         }
       ]
     },
     {
       "tag": "🇯🇵 日本节点",
       "type": "selector",
-      "outbounds": [
-        "{all}"
-      ],
-      "filter": [
+      "outbounds": ["{all}"],
+      "rules": [
         {
-          "action": "include",
-          "keywords": [
-            "🇯🇵|JP|jp|日本|日|Japan"
-          ]
+          "type": "inbound_tags",
+          "inbound_tags": ["🇯🇵|JP|jp|日本|日|Japan"],
+          "action": "add"
         }
       ]
     },
     {
       "tag": "🇺🇲 美国节点",
       "type": "selector",
-      "outbounds": [
-        "{all}"
-      ],
-      "filter": [
+      "outbounds": ["{all}"],
+      "rules": [
         {
-          "action": "include",
-          "keywords": [
-            "🇺🇸|US|us|美国|美|United States"
-          ]
+          "type": "inbound_tags",
+          "inbound_tags": ["🇺🇸|US|us|美国|美|United States"],
+          "action": "add"
         },
         {
-          "action": "exclude",
-          "keywords": [
-            "香港|港|HK|hk|HongKong"
-          ]
+          "type": "inbound_tags",
+          "inbound_tags": ["香港|港|HK|hk|HongKong"],
+          "action": "exclude"
         }
       ]
     },
     {
       "tag": "🔯 香港自动",
       "type": "urltest",
-      "outbounds": [
-        "{all}"
-      ],
-      "filter": [
+      "outbounds": ["{all}"],
+      "rules": [
         {
-          "action": "include",
-          "keywords": [
-            "🇭🇰|HK|hk|香港|港|HongKong"
-          ]
+          "type": "inbound_tags",
+          "inbound_tags": ["🇭🇰|HK|hk|香港|港|HongKong"],
+          "action": "add"
         }
       ],
       "url": "http://www.gstatic.com/generate_204",
