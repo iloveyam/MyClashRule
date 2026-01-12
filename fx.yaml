@@ -1,12 +1,12 @@
 # ==========================================================
-# Clash Meta 稳定修复版 - 解决加载报错
+# Clash Meta 最终修复版 - 解决 78 行报错
 # ==========================================================
 
 # 1. 订阅源
 proxy-providers:
   MyAirport:
     type: http
-    url: "你的订阅链接" # <--- 替换成你的真实链接
+    url: "你的订阅链接" # <--- 填入你的链接
     interval: 3600
     path: ./proxies/airport.yaml
     health-check:
@@ -23,7 +23,7 @@ tcp-concurrent: true
 log-level: info
 global-client-fingerprint: chrome
 
-# 3. DNS (规则模式的核心)
+# 3. DNS
 dns:
   enable: true
   listen: 0.0.0.0:1053
@@ -36,10 +36,8 @@ dns:
     - 119.29.29.29
   proxy-server-nameserver:
     - https://dns.alidns.com/dns-query
-  fallback:
-    - https://8.8.8.8/dns-query
 
-# 4. 策略组 (保持你的完整分流逻辑)
+# 4. 策略组
 proxy-groups:
   - {name: 🚀 默认代理, type: select, proxies: [🔯 美国故转, 🔯 香港故转, 🔯 日本故转, 🔯 狮城故转, ♻️ 自动选择, 🌐 全部节点, DIRECT]}
   - {name: 🎵 Spotify, type: select, proxies: [🔯 美国故转, 🔯 香港故转, 🔯 狮城故转, ♻️ 自动选择, 🌐 全部节点, DIRECT]}
@@ -53,22 +51,20 @@ proxy-groups:
   - {name: 🎵 TikTok, type: select, proxies: [🔯 狮城故转, 🔯 日本故转, 🔯 韩国故转, ♻️ 自动选择]}
   - {name: 🐟 漏网之鱼, type: select, proxies: [🚀 默认代理, DIRECT]}
 
-  # 底层节点过滤 (必须包含 use 关键字)
+  # 节点过滤逻辑
   - {name: 🇺🇲 美国节点, type: select, use: [MyAirport], filter: "(?i)US|America|States"}
   - {name: 🇭🇰 香港节点, type: select, use: [MyAirport], filter: "(?i)HK|Hong"}
   - {name: 🇯🇵 日本节点, type: select, use: [MyAirport], filter: "(?i)JP|Japan"}
   - {name: 🇸🇬 狮城节点, type: select, use: [MyAirport], filter: "(?i)SG|Singapore"}
-  
   - {name: 🔯 美国故转, type: fallback, use: [MyAirport], interval: 300, url: 'http://www.gstatic.com/generate_204', filter: "(?i)US|America|States"}
   - {name: 🔯 香港故转, type: fallback, use: [MyAirport], interval: 300, url: 'http://www.gstatic.com/generate_204', filter: "(?i)HK|Hong"}
   - {name: 🔯 日本故转, type: fallback, use: [MyAirport], interval: 300, url: 'http://www.gstatic.com/generate_204', filter: "(?i)JP|Japan"}
   - {name: 🔯 狮城故转, type: fallback, use: [MyAirport], interval: 300, url: 'http://www.gstatic.com/generate_204', filter: "(?i)SG|Singapore"}
-
   - {name: ♻️ 自动选择, type: url-test, use: [MyAirport], tolerance: 50, interval: 300, url: 'http://www.gstatic.com/generate_204'}
   - {name: 🌐 全部节点, type: select, use: [MyAirport]}
 
-# 5. 规则集配置 (移除锚点引用，直接写完整参数)
-rule-providers: 
+# 5. 规则集配置 (修正后的第 78 行就在下方)
+rule-providers:
   spotify:
     type: http
     behavior: classical
