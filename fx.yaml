@@ -1,8 +1,8 @@
 # ==========================================================
-# Clash Meta (Mihomo) 规则模式修复版
+# Clash Meta 稳定修复版 - 解决加载报错
 # ==========================================================
 
-# 1. 订阅源配置
+# 1. 订阅源
 proxy-providers:
   MyAirport:
     type: http
@@ -20,10 +20,10 @@ allow-lan: true
 ipv6: false
 unified-delay: true
 tcp-concurrent: true
-log-level: info # 调高日志等级，方便看哪里报错
+log-level: info
 global-client-fingerprint: chrome
 
-# 3. DNS 模块 (这是规则模式成功的关键)
+# 3. DNS (规则模式的核心)
 dns:
   enable: true
   listen: 0.0.0.0:1053
@@ -38,66 +38,80 @@ dns:
     - https://dns.alidns.com/dns-query
   fallback:
     - https://8.8.8.8/dns-query
-    - https://1.1.1.1/dns-query
 
-# 4. 规则集锚点
-rule-anchor:
-  ip: &ip {type: http, interval: 86400, behavior: ipcidr, format: mrs}
-  domain: &domain {type: http, interval: 86400, behavior: domain, format: mrs}
-  class: &class {type: http, interval: 86400, behavior: classical, format: mrs}
-
-# 5. 策略组配置 (完全保留你的逻辑)
+# 4. 策略组 (保持你的完整分流逻辑)
 proxy-groups:
   - {name: 🚀 默认代理, type: select, proxies: [🔯 美国故转, 🔯 香港故转, 🔯 日本故转, 🔯 狮城故转, ♻️ 自动选择, 🌐 全部节点, DIRECT]}
   - {name: 🎵 Spotify, type: select, proxies: [🔯 美国故转, 🔯 香港故转, 🔯 狮城故转, ♻️ 自动选择, 🌐 全部节点, DIRECT]}
   - {name: 🎬 Emby, type: select, proxies: [DIRECT, 🚀 默认代理, 🔯 香港故转, 🔯 狮城故转, 🌐 全部节点]}
-  - {name: 📹 YouTube, type: select, proxies: [🔯 香港故转,🔯 美国故转,  🔯 日本故转, 🔯 狮城故转, ♻️ 自动选择, 🌐 全部节点, DIRECT]}
+  - {name: 📹 YouTube, type: select, proxies: [🔯 美国故转, 🔯 香港故转, 🔯 日本故转, 🔯 狮城故转, ♻️ 自动选择, 🌐 全部节点, DIRECT]}
   - {name: 🍀 Google, type: select, proxies: [🔯 香港故转, 🔯 日本故转, 🔯 狮城故转, 🔯 美国故转, ♻️ 自动选择, DIRECT]}
   - {name: 🤖 AI, type: select, proxies: [🔯 美国故转, 🔯 日本故转, 🔯 狮城故转, ♻️ 自动选择, 🌐 全部节点]}
   - {name: 👨🏿‍💻 GitHub, type: select, proxies: [🔯 香港故转, 🔯 日本故转, 🔯 狮城故转, 🔯 美国故转, ♻️ 自动选择, DIRECT]}
   - {name: 📲 Telegram, type: select, proxies: [🔯 香港故转, 🔯 日本故转, 🔯 狮城故转, 🔯 美国故转, ♻️ 自动选择, 🌐 全部节点]}
-  - {name: 🎥 NETFLIX, type: select, proxies: [🔯 美国故转,狮城故转, 🔯 香港故转, 🔯 日本故转, 🔯 美国故转, ♻️ 自动选择]}
-  - {name: 🎵 TikTok, type: select, proxies: [🔯 美国故转,狮城故转, 🔯 日本故转, 🔯 韩国故转, ♻️ 自动选择]}
+  - {name: 🎥 NETFLIX, type: select, proxies: [🔯 狮城故转, 🔯 香港故转, 🔯 日本故转, 🔯 美国故转, ♻️ 自动选择]}
+  - {name: 🎵 TikTok, type: select, proxies: [🔯 狮城故转, 🔯 日本故转, 🔯 韩国故转, ♻️ 自动选择]}
   - {name: 🐟 漏网之鱼, type: select, proxies: [🚀 默认代理, DIRECT]}
 
-  # 底层节点过滤
-  - {name: 🇺🇲 美国节点, type: select, use: [MyAirport], filter: "(?=.*(美|US|(?i)States|America))^((?!(港|台|韩|新|日)).)*$"}
-  - {name: 🇭🇰 香港节点, type: select, use: [MyAirport], filter: "(?=.*(港|HK|(?i)Hong))^((?!(台|日|韩|新|深|美)).)*$"}
-  - {name: 🇯🇵 日本节点, type: select, use: [MyAirport], filter: "(?=.*(日|JP|(?i)Japan))^((?!(港|台|韩|新|美)).)*$"}
-  - {name: 🇸🇬 狮城节点, type: select, use: [MyAirport], filter: "(?=.*(新加坡|坡|狮城|SG|Singapore))^((?!(台|日|韩|深|美)).)*$"}
-  - {name: 🔯 美国故转, type: fallback, use: [MyAirport], interval: 300, url: 'http://www.gstatic.com/generate_204', filter: "(?=.*(美|US|(?i)States|America))^((?!(港|台|韩|新|日)).)*$"}
-  - {name: 🔯 香港故转, type: fallback, use: [MyAirport], interval: 300, url: 'http://www.gstatic.com/generate_204', filter: "(?=.*(港|HK|(?i)Hong))^((?!(台|日|韩|新|深|美)).)*$"}
-  - {name: 🔯 日本故转, type: fallback, use: [MyAirport], interval: 300, url: 'http://www.gstatic.com/generate_204', filter: "(?=.*(日|JP|(?i)Japan))^((?!(港|台|韩|新|美)).)*$"}
-  - {name: 🔯 狮城故转, type: fallback, use: [MyAirport], interval: 300, url: 'http://www.gstatic.com/generate_204', filter: "(?=.*(新加坡|坡|狮城|SG|Singapore))^((?!(台|日|韩|深|美)).)*$"}
+  # 底层节点过滤 (必须包含 use 关键字)
+  - {name: 🇺🇲 美国节点, type: select, use: [MyAirport], filter: "(?i)US|America|States"}
+  - {name: 🇭🇰 香港节点, type: select, use: [MyAirport], filter: "(?i)HK|Hong"}
+  - {name: 🇯🇵 日本节点, type: select, use: [MyAirport], filter: "(?i)JP|Japan"}
+  - {name: 🇸🇬 狮城节点, type: select, use: [MyAirport], filter: "(?i)SG|Singapore"}
+  
+  - {name: 🔯 美国故转, type: fallback, use: [MyAirport], interval: 300, url: 'http://www.gstatic.com/generate_204', filter: "(?i)US|America|States"}
+  - {name: 🔯 香港故转, type: fallback, use: [MyAirport], interval: 300, url: 'http://www.gstatic.com/generate_204', filter: "(?i)HK|Hong"}
+  - {name: 🔯 日本故转, type: fallback, use: [MyAirport], interval: 300, url: 'http://www.gstatic.com/generate_204', filter: "(?i)JP|Japan"}
+  - {name: 🔯 狮城故转, type: fallback, use: [MyAirport], interval: 300, url: 'http://www.gstatic.com/generate_204', filter: "(?i)SG|Singapore"}
+
   - {name: ♻️ 自动选择, type: url-test, use: [MyAirport], tolerance: 50, interval: 300, url: 'http://www.gstatic.com/generate_204'}
   - {name: 🌐 全部节点, type: select, use: [MyAirport]}
 
-# 6. 规则集配置 (确保 URL 和格式正确)
+# 5. 规则集配置 (移除锚点引用，直接写完整参数)
 rule-providers: 
-    ai: { <<: *domain, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-ai-!cn.mrs" }
-  youtube: { <<: *domain, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/youtube.mrs"}
-  google: { <<: *domain, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/google.mrs"}
-  github: { <<: *domain, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/github.mrs"}
-  telegram: { <<: *domain, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/telegram.mrs"}
-  netflix: { <<: *domain, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/netflix.mrs"}
-  tiktok: { <<: *domain, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/tiktok.mrs"}
-  spotify: { <<: *class, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/spotify.mrs" }
-  emby: { <<: *class, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/emby.mrs" }
-  cn_domain: { <<: *domain, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/cn.mrs"}
-  cn_ip: { <<: *ip, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/cn.mrs"}
+  spotify:
+    type: http
+    behavior: classical
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/spotify.mrs"
+    format: mrs
+    interval: 86400
+  emby:
+    type: http
+    behavior: classical
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/emby.mrs"
+    format: mrs
+    interval: 86400
+  ai:
+    type: http
+    behavior: domain
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-ai-!cn.mrs"
+    format: mrs
+    interval: 86400
+  youtube:
+    type: http
+    behavior: domain
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/youtube.mrs"
+    format: mrs
+    interval: 86400
+  cn_domain:
+    type: http
+    behavior: domain
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/cn.mrs"
+    format: mrs
+    interval: 86400
+  cn_ip:
+    type: http
+    behavior: ipcidr
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/cn.mrs"
+    format: mrs
+    interval: 86400
 
-# 7. 规则匹配 (移除 no-resolve 增加稳定性)
+# 6. 规则匹配
 rules:
-  
-  - RULE-SET,ai,🤖 AI
-  - RULE-SET,github,👨🏿‍💻 GitHub
-  - RULE-SET,youtube,📹 YouTube
-  - RULE-SET,google,🍀 Google
-  - RULE-SET,telegram,📲 Telegram
-  - RULE-SET,netflix,🎥 NETFLIX
-  - RULE-SET,tiktok,🎵 TikTok
   - RULE-SET,spotify,🎵 Spotify
   - RULE-SET,emby,🎬 Emby
+  - RULE-SET,ai,🤖 AI
+  - RULE-SET,youtube,📹 YouTube
   - RULE-SET,cn_domain,DIRECT
   - RULE-SET,cn_ip,DIRECT
   - GEOIP,lan,DIRECT,no-resolve
