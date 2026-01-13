@@ -82,7 +82,6 @@ proxy-groups:
   - {name: 🌐 全部节点, type: select, use: [MyAirport]}
 
 # 6. 规则集配置
-rule-providers: 
 rule-anchor:
   ip: &ip {type: http, interval: 86400, behavior: ipcidr, format: mrs}
   domain: &domain {type: http, interval: 86400, behavior: domain, format: mrs}
