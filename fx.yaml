@@ -1,5 +1,5 @@
 # ==========================================================
-# Clash Meta (Mihomo) 终极修正版 - 解决名称匹配报错
+# Clash Meta (Mihomo) 修复版 - 解决“直连 not found”报错
 # ==========================================================
 
 # 1. 订阅源配置
@@ -45,21 +45,22 @@ rule-anchor:
 # 5. 策略组
 proxy-groups:
   # --- 总调度组 ---
+  # 修正：将末尾的“直连”改为“DIRECT”
   - {name: 🚀 默认代理, type: select, proxies: [🔯 香港故转, 🔯 日本故转, 🔯 狮城故转, 🔯 美国故转, ♻️ 香港自动, ♻️ 日本自动, ♻️ 狮城自动, ♻️ 美国自动, ♻️ 自动选择, 🇭🇰 香港节点, 🇯🇵 日本节点, 🇸🇬 狮城节点, 🇺🇲 美国节点, 🌐 全部节点, DIRECT]}
   
   # --- 业务分流组 ---
-  - {name: 📹 YouTube, type: select, proxies: [🔯 美国故转, 🔯 香港故转, 🔯 日本故转, 🔯 狮城故转, ♻️ 自动选择, 🌐 全部节点, DIRECT]}
+  - {name: 📹 YouTube, type: select, proxies: [🔯 香港故转, 🔯 美国故转, 🔯 日本故转, 🔯 狮城故转, ♻️ 自动选择, 🌐 全部节点, DIRECT]}
   - {name: 🍀 Google, type: select, proxies: [🔯 香港故转, 🔯 日本故转, 🔯 狮城故转, 🔯 美国故转, ♻️ 自动选择, DIRECT]}
   - {name: 🤖 AI, type: select, proxies: [🔯 日本故转, 🔯 狮城故转, 🔯 美国故转, ♻️ 自动选择, 🌐 全部节点]}
   - {name: 👨🏿‍💻 GitHub, type: select, proxies: [🔯 香港故转, 🔯 日本故转, 🔯 狮城故转, 🔯 美国故转, ♻️ 自动选择, DIRECT]}
-  - {name: 🎵 TikTok, type: select, proxies: [🔯 美国故转,🔯 日本故转, 🔯 狮城故转, 🔯 韩国故转, ♻️ 自动选择, 🌐 全部节点]}
+  - {name: 🎵 TikTok, type: select, proxies: [🔯 日本故转, 🔯 狮城故转, 🔯 韩国故转, ♻️ 自动选择, 🌐 全部节点]}
   - {name: 📲 Telegram, type: select, proxies: [🔯 香港故转, 🔯 日本故转, 🔯 狮城故转, 🔯 美国故转, ♻️ 自动选择, 🌐 全部节点]}
-  - {name: 🎥 NETFLIX, type: select, proxies: [🔯 美国故转,🔯 狮城故转, 🔯 香港故转, 🔯 日本故转,  ♻️ 自动选择]}
+  - {name: 🎥 NETFLIX, type: select, proxies: [🔯 美国故转, 🔯 狮城故转, 🔯 香港故转, 🔯 日本故转, ♻️ 自动选择]}
   - {name: 🎵 Spotify, type: select, proxies: [🔯 美国故转, 🔯 狮城故转, 🔯 香港故转, 🔯 日本故转, ♻️ 自动选择, 🌐 全部节点]}
   - {name: 🎬 Emby, type: select, proxies: [DIRECT, 🚀 默认代理, 🔯 香港故转, 🔯 狮城故转, 🌐 全部节点]}
   - {name: 🐟 漏网之鱼, type: select, proxies: [🚀 默认代理, DIRECT]}
 
-  # --- 底层节点分拣 (关联订阅) ---
+  # --- 底层节点过滤组 ---
   - {name: 🇭🇰 香港节点, type: select, use: [MyAirport], filter: "(?i)HK|Hong Kong|港"}
   - {name: 🇯🇵 日本节点, type: select, use: [MyAirport], filter: "(?i)JP|Japan|日"}
   - {name: 🇸🇬 狮城节点, type: select, use: [MyAirport], filter: "(?i)SG|Singapore|新|坡"}
