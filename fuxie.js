@@ -1,6 +1,7 @@
 /**
  * Mihomo Party 完整复刻版脚本
  * 包含：所有策略组(GitHub/OneDrive/Microsoft等)、所有故转/自动/手动分层逻辑
+ * 修改记录：已开启 IPv6
  */
 
 function main(config) {
@@ -109,6 +110,7 @@ function main(config) {
   // 7. 强制覆盖 DNS 配置
   config.dns = {
     enable: true,
+    ipv6: true, // <--- 已添加：开启 DNS IPv6 解析
     "enhanced-mode": "fake-ip",
     "fake-ip-range": "28.0.0.1/8",
     "fake-ip-filter-mode": "blacklist",
@@ -131,50 +133,4 @@ function main(config) {
     "spotify_domain": { type: "http", interval: 86400, behavior: "domain", format: "mrs", url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/spotify.mrs" },
     "emby_domain": { type: "http", interval: 86400, behavior: "domain", format: "mrs", url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/emby.mrs" },
     "onedrive_domain": { type: "http", interval: 86400, behavior: "domain", format: "mrs", url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/onedrive.mrs"},
-    "microsoft_domain": { type: "http", interval: 86400, behavior: "domain", format: "mrs", url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/microsoft.mrs"},
-    "apple_domain": { type: "http", interval: 86400, behavior: "domain", format: "mrs", url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/apple.mrs"},
-    "tiktok_domain": { type: "http", interval: 86400, behavior: "domain", format: "mrs", url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/tiktok.mrs"},
-    "geolocation-!cn": { type: "http", interval: 86400, behavior: "domain", format: "mrs", url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/geolocation-!cn.mrs"},
-    "cn_domain": { type: "http", interval: 86400, behavior: "domain", format: "mrs", url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/cn.mrs"},
-    "private_ip": { type: "http", interval: 86400, behavior: "ipcidr", format: "mrs", url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/private.mrs"},
-    "cn_ip": { type: "http", interval: 86400, behavior: "ipcidr", format: "mrs", url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/cn.mrs"},
-    "google_ip": { type: "http", interval: 86400, behavior: "ipcidr", format: "mrs", url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/google.mrs"},
-    "telegram_ip": { type: "http", interval: 86400, behavior: "ipcidr", format: "mrs", url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/telegram.mrs"},
-    "netflix_ip": { type: "http", interval: 86400, behavior: "ipcidr", format: "mrs", url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/netflix.mrs"},
-    "apple_ip": { type: "http", interval: 86400, behavior: "ipcidr", format: "mrs", url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo-lite/geoip/apple.mrs"}
-  };
-
-  // 9. 写入规则 (Rules) - 已修正名称对应问题
-  config.rules = [
-    "RULE-SET,private_ip,DIRECT,no-resolve",
-    "RULE-SET,proxylite,🚀 默认代理",
-    "RULE-SET,ai,🤖 AI",
-    "RULE-SET,github_domain,👨🏿‍💻 GitHub",
-    "RULE-SET,youtube_domain,📹 YouTube",
-    "RULE-SET,google_domain,🍀 Google",
-    "RULE-SET,onedrive_domain,🐬 OneDrive",
-    "RULE-SET,microsoft_domain,🪟 Microsoft",
-    "RULE-SET,apple_domain,DIRECT",
-    "RULE-SET,tiktok_domain,🎵 TikTok",
-    "RULE-SET,telegram_domain,📲 Telegram",
-    "RULE-SET,netflix_domain,🎥 NETFLIX",
-    "RULE-SET,spotify_domain,🎵 Spotify",
-    "RULE-SET,emby_domain,🎬 Emby",
-    "RULE-SET,apple_ip,DIRECT",
-    "RULE-SET,google_ip,🍀 Google",
-    "RULE-SET,netflix_ip,🎥 NETFLIX",
-    "RULE-SET,telegram_ip,📲 Telegram",
-    "RULE-SET,geolocation-!cn,🚀 默认代理",
-    "RULE-SET,cn_domain,DIRECT",
-    "RULE-SET,cn_ip,DIRECT",
-    "MATCH,🐟 漏网之鱼"
-  ];
-
-  // 10. 杂项设置 (Optional)
-  config['mixed-port'] = 7890;
-  config['allow-lan'] = true;
-  config['unified-delay'] = true;
-  config['tcp-concurrent'] = true;
-
-  return config;
-}
+    "microsoft_domain": { type: "http", interval: 86400, behavior: "domain", format: "mrs", url: "
