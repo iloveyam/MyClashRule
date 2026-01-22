@@ -5,7 +5,7 @@
 # 机场订阅
 proxy-providers:
   Airport1:
-    url: "https://appv2.nloli.xyz/tako_api/secure?token=0x0721013239deab16014e7bbd23d466169ba57dcb937cf0e7ff&addFlag=yes&vid=970c7bbb015"
+    url: ""
     type: http
     interval: 0
     health-check:
