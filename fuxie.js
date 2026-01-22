@@ -1,20 +1,18 @@
 /**
- * Clash Party 完整复刻版脚本
- * 包含：所有策略组(GitHub/OneDrive/Microsoft等)、所有故转/自动/手动分层逻辑
- * 修改记录：已开启 IPv6
+ * Mihomo Party 完整复刻版脚本
+ * 包含：IPv6 专用测试组、所有策略组、自动/手动分层逻辑
+ * 修改记录：已添加 IPv6 开启及测试组
  */
 
 function main(config) {
   // 1. 获取订阅中的所有节点
   const proxies = config.proxies || [];
   
-  // 2. 定义筛选函数 (严格复刻 YAML 的正则逻辑)
+  // 2. 定义筛选函数
   const filter = (inc, exc = []) => {
     return proxies.filter(p => {
       const name = p.name;
-      // 包含关键字 (不区分大小写)
       const hasInc = new RegExp(inc, 'i').test(name);
-      // 排除关键字 (不区分大小写)
       const noExc = exc.length === 0 || !new RegExp(exc.join('|'), 'i').test(name);
       return hasInc && noExc;
     }).map(p => p.name);
@@ -27,13 +25,13 @@ function main(config) {
   const us = filter("美|US|States|America", ["港","台","韩","新","日"]);
   const all = proxies.map(p => p.name);
 
-  // 防止空分组报错 (如果没有对应节点，塞入 DIRECT)
+  // 防止空分组报错
   if(hk.length === 0) hk.push("DIRECT");
   if(jp.length === 0) jp.push("DIRECT");
   if(sg.length === 0) sg.push("DIRECT");
   if(us.length === 0) us.push("DIRECT");
 
-  // 4. 定义基础功能组名称 (为了后面引用方便)
+  // 4. 定义组名称
   const G_HK_Select = "🇭🇰 香港节点";
   const G_JP_Select = "🇯🇵 日本节点";
   const G_SG_Select = "🇸🇬 狮城节点";
@@ -51,22 +49,26 @@ function main(config) {
   
   const G_Global_Auto = "♻️ 自动选择";
   const G_All = "🌐 全部节点";
+  const G_IPv6_Test = "🧪 IPv6 测试"; // <--- 新增组名
 
-  // 5. 定义【引用列表】，严格按照你 YAML 的优先级排序
-  // 顺序：故转 -> 自动 -> 手动 -> 全部 -> 直连
+  // 5. 定义引用列表
   const list_general = [G_HK_Fall, G_JP_Fall, G_SG_Fall, G_US_Fall, G_HK_Auto, G_JP_Auto, G_SG_Auto, G_US_Auto, G_Global_Auto, G_HK_Select, G_JP_Select, G_SG_Select, G_US_Select, G_All, "DIRECT"];
-  
-  // YouTube/Google 优先顺序 (美->港->日->狮)
   const list_video = [G_US_Fall, G_HK_Fall, G_JP_Fall, G_SG_Fall, G_US_Auto, G_HK_Auto, G_JP_Auto, G_SG_Auto, G_Global_Auto, G_HK_Select, G_JP_Select, G_SG_Select, G_US_Select, G_All, "DIRECT"];
-  
-  // AI 优先顺序 (美->日->狮 -> 排除香港)
   const list_ai = [G_US_Fall, G_JP_Fall, G_SG_Fall, G_HK_Auto, G_JP_Auto, G_SG_Auto, G_US_Auto, G_Global_Auto, G_HK_Select, G_JP_Select, G_SG_Select, G_US_Select, G_All, "DIRECT"];
-  
-  // 微软/OneDrive 优先顺序 (日->狮->美 -> 港在后)
   const list_ms = [G_JP_Fall, G_SG_Fall, G_US_Fall, G_HK_Auto, G_JP_Auto, G_SG_Auto, G_US_Auto, G_Global_Auto, G_HK_Select, G_JP_Select, G_SG_Select, G_US_Select, G_All, "DIRECT"];
 
-  // 6. 构建所有策略组
+  // 6. 构建策略组
   const groups = [
+    // --- 新增：IPv6 测试专用组 ---
+    { 
+      name: G_IPv6_Test, 
+      type: "select", 
+      // 这里的 url 是关键，只允许 IPv6 访问。能测通=支持IPv6
+      url: "http://ipv6.google.com/generate_204", 
+      interval: 300, 
+      proxies: all // 包含所有节点，方便你挨个看
+    },
+
     // --- 主要策略组 ---
     { name: "🚀 默认代理", type: "select", proxies: list_general },
     { name: "📹 YouTube", type: "select", proxies: list_video },
@@ -107,10 +109,10 @@ function main(config) {
 
   config['proxy-groups'] = groups;
 
-  // 7. 强制覆盖 DNS 配置
+  // 7. 强制开启 DNS IPv6
   config.dns = {
     enable: true,
-    ipv6: true, // <--- 已添加：开启 DNS IPv6 解析
+    ipv6: true, // 开启 DNS 解析 IPv6
     "enhanced-mode": "fake-ip",
     "fake-ip-range": "28.0.0.1/8",
     "fake-ip-filter-mode": "blacklist",
@@ -120,7 +122,7 @@ function main(config) {
     "proxy-server-nameserver": ["https://dns.alidns.com/dns-query", "https://doh.pub/dns-query"]
   };
   
-  // 8. 规则集引用 (rule-providers)
+  // 8. 规则集引用
   config['rule-providers'] = {
     "fakeipfilter_domain": { type: "http", interval: 86400, behavior: "domain", format: "mrs", url: "https://raw.githubusercontent.com/wwqgtxx/clash-rules/release/fakeip-filter.mrs"},
     "proxylite": { type: "http", interval: 86400, behavior: "classical", format: "text", url: "https://raw.githubusercontent.com/qichiyuhub/rule/refs/heads/main/proxy.list"},
@@ -133,4 +135,51 @@ function main(config) {
     "spotify_domain": { type: "http", interval: 86400, behavior: "domain", format: "mrs", url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/spotify.mrs" },
     "emby_domain": { type: "http", interval: 86400, behavior: "domain", format: "mrs", url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/emby.mrs" },
     "onedrive_domain": { type: "http", interval: 86400, behavior: "domain", format: "mrs", url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/onedrive.mrs"},
-    "microsoft_domain": { type: "http", interval: 86400, behavior: "domain", format: "mrs", url: "
+    "microsoft_domain": { type: "http", interval: 86400, behavior: "domain", format: "mrs", url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/microsoft.mrs"},
+    "apple_domain": { type: "http", interval: 86400, behavior: "domain", format: "mrs", url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/apple.mrs"},
+    "tiktok_domain": { type: "http", interval: 86400, behavior: "domain", format: "mrs", url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/tiktok.mrs"},
+    "geolocation-!cn": { type: "http", interval: 86400, behavior: "domain", format: "mrs", url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/geolocation-!cn.mrs"},
+    "cn_domain": { type: "http", interval: 86400, behavior: "domain", format: "mrs", url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/cn.mrs"},
+    "private_ip": { type: "http", interval: 86400, behavior: "ipcidr", format: "mrs", url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/private.mrs"},
+    "cn_ip": { type: "http", interval: 86400, behavior: "ipcidr", format: "mrs", url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/cn.mrs"},
+    "google_ip": { type: "http", interval: 86400, behavior: "ipcidr", format: "mrs", url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/google.mrs"},
+    "telegram_ip": { type: "http", interval: 86400, behavior: "ipcidr", format: "mrs", url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/telegram.mrs"},
+    "netflix_ip": { type: "http", interval: 86400, behavior: "ipcidr", format: "mrs", url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/netflix.mrs"},
+    "apple_ip": { type: "http", interval: 86400, behavior: "ipcidr", format: "mrs", url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo-lite/geoip/apple.mrs"}
+  };
+
+  // 9. 写入规则
+  config.rules = [
+    "RULE-SET,private_ip,DIRECT,no-resolve",
+    "RULE-SET,proxylite,🚀 默认代理",
+    "RULE-SET,ai,🤖 AI",
+    "RULE-SET,github_domain,👨🏿‍💻 GitHub",
+    "RULE-SET,youtube_domain,📹 YouTube",
+    "RULE-SET,google_domain,🍀 Google",
+    "RULE-SET,onedrive_domain,🐬 OneDrive",
+    "RULE-SET,microsoft_domain,🪟 Microsoft",
+    "RULE-SET,apple_domain,DIRECT",
+    "RULE-SET,tiktok_domain,🎵 TikTok",
+    "RULE-SET,telegram_domain,📲 Telegram",
+    "RULE-SET,netflix_domain,🎥 NETFLIX",
+    "RULE-SET,spotify_domain,🎵 Spotify",
+    "RULE-SET,emby_domain,🎬 Emby",
+    "RULE-SET,apple_ip,DIRECT",
+    "RULE-SET,google_ip,🍀 Google",
+    "RULE-SET,netflix_ip,🎥 NETFLIX",
+    "RULE-SET,telegram_ip,📲 Telegram",
+    "RULE-SET,geolocation-!cn,🚀 默认代理",
+    "RULE-SET,cn_domain,DIRECT",
+    "RULE-SET,cn_ip,DIRECT",
+    "MATCH,🐟 漏网之鱼"
+  ];
+
+  // 10. 杂项设置 (开启 IPv6 总开关)
+  config.ipv6 = true; 
+  config['mixed-port'] = 7890;
+  config['allow-lan'] = true;
+  config['unified-delay'] = true;
+  config['tcp-concurrent'] = true;
+
+  return config;
+}
