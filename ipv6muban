@@ -1,0 +1,354 @@
+# ==========================================================
+# ShellCrash 配置文件 (无锚点稳定版)
+# ==========================================================
+
+# --- 1. 基础设置 ---
+mixed-port: 7890
+redir-port: 7892
+tproxy-port: 7893
+allow-lan: true
+mode: Rule
+log-level: info
+ipv6: true
+external-controller: :9999
+external-ui: ui
+secret: ""
+tun: {enable: true, stack: system, device: utun, auto-route: false, auto-detect-interface: false}
+experimental: {ignore-resolve-fail: true, interface-name: en0}
+unified-delay: true
+tcp-concurrent: true
+global-client-fingerprint: chrome
+
+profile:
+  store-selected: true
+  store-fake-ip: true
+
+# --- 2. 代理订阅源 (请确认 URL 是否最新) ---
+proxy-providers:
+  MyAirport:
+    type: http
+    # 下面是你的订阅链接，如果失效请手动替换
+    url: ""
+    interval: 3600
+    path: ./proxies/airport.yaml
+    health-check:
+      enable: true
+      interval: 600
+      url: http://www.gstatic.com/generate_204
+
+# --- 3. DNS 设置 ---
+dns:
+  enable: true
+  listen: :1053
+  use-hosts: true
+  ipv6: true
+  default-nameserver: [ 223.5.5.5, 119.29.29.29 ]
+  enhanced-mode: fake-ip
+  fake-ip-range: 198.18.0.1/16
+  respect-rules: true
+  nameserver-policy:
+    "geosite:cn": [223.5.5.5, 119.29.29.29]
+  proxy-server-nameserver: [223.5.5.5, 119.29.29.29]
+  nameserver:
+    - https://dns.alidns.com/dns-query
+    - https://doh.pub/dns-query
+  fake-ip-filter:
+    - '*'
+    - '+.lan'
+    - '+.local'
+    - '+.market.xiaomi.com'
+    - 'geosite:cn'
+
+# --- 4. 策略组 (严格按照你的要求分组) ---
+proxy-groups:
+  # [新增] IPv6 测试组
+  # 测速 URL 为纯 IPv6 地址，能通=支持 IPv6，显示超时=不支持
+  - name: 🧪 IPv6 测试
+    type: select
+    use: [MyAirport]
+    url: 'http://ipv6.google.com/generate_204'
+    interval: 300
+
+  # [业务组] 默认代理
+  - name: 🚀 默认代理
+    type: select
+    proxies: [🔯 香港故转, 🔯 日本故转, 🔯 狮城故转, 🔯 美国故转, ♻️ 香港自动, ♻️ 日本自动, ♻️ 狮城自动, ♻️ 美国自动, ♻️ 自动选择, 🇭🇰 香港节点, 🇯🇵 日本节点, 🇸🇬 狮城节点, 🇺🇲 美国节点, 🌐 全部节点, DIRECT]
+
+  # [业务组] 视频媒体
+  - name: 📹 YouTube
+    type: select
+    proxies: [🔯 香港故转, 🔯 美国故转, 🔯 日本故转, 🔯 狮城故转, ♻️ 美国自动, ♻️ 香港自动, ♻️ 日本自动, ♻️ 狮城自动, ♻️ 自动选择, 🇭🇰 香港节点, 🇯🇵 日本节点, 🇸🇬 狮城节点, 🇺🇲 美国节点, 🌐 全部节点, DIRECT]
+  
+  - name: 🎥 NETFLIX
+    type: select
+    proxies: [🔯 狮城故转, 🔯 香港故转, 🔯 日本故转, 🔯 美国故转, ♻️ 香港自动, ♻️ 日本自动, ♻️ 狮城自动, ♻️ 美国自动, ♻️ 自动选择, 🇭🇰 香港节点, 🇯🇵 日本节点, 🇸🇬 狮城节点, 🇺🇲 美国节点, 🌐 全部节点, DIRECT]
+
+  - name: 🎬 Emby
+    type: select
+    proxies: [DIRECT, 🚀 默认代理, 🔯 香港故转, 🔯 狮城故转, 🌐 全部节点]
+
+  - name: 🎵 TikTok
+    type: select
+    proxies: [🔯 日本故转, 🔯 狮城故转, 🔯 美国故转, ♻️ 香港自动, ♻️ 日本自动, ♻️ 狮城自动, ♻️ 美国自动, ♻️ 自动选择, 🇭🇰 香港节点, 🇯🇵 日本节点, 🇸🇬 狮城节点, 🇺🇲 美国节点, 🌐 全部节点, DIRECT]
+
+  - name: 🎵 Spotify
+    type: select
+    proxies: [🔯 美国故转, 🔯 香港故转, 🔯 狮城故转, 🔯 日本故转, ♻️ 自动选择, 🌐 全部节点, DIRECT]
+
+  # [业务组] 常用服务
+  - name: 🍀 Google
+    type: select
+    proxies: [🔯 香港故转, 🔯 日本故转, 🔯 狮城故转, 🔯 美国故转, ♻️ 香港自动, ♻️ 日本自动, ♻️ 狮城自动, ♻️ 美国自动, ♻️ 自动选择, 🇭🇰 香港节点, 🇯🇵 日本节点, 🇸🇬 狮城节点, 🇺🇲 美国节点, 🌐 全部节点, DIRECT]
+
+  - name: 🤖 AI
+    type: select
+    proxies: [🔯 美国故转, 🔯 日本故转, 🔯 狮城故转, ♻️ 香港自动, ♻️ 日本自动, ♻️ 狮城自动, ♻️ 美国自动, ♻️ 自动选择, 🇭🇰 香港节点, 🇯🇵 日本节点, 🇸🇬 狮城节点, 🇺🇲 美国节点, 🌐 全部节点, DIRECT]
+
+  - name: 👨🏿‍💻 GitHub
+    type: select
+    proxies: [🔯 香港故转, 🔯 日本故转, 🔯 狮城故转, 🔯 美国故转, ♻️ 香港自动, ♻️ 日本自动, ♻️ 狮城自动, ♻️ 美国自动, ♻️ 自动选择, 🇭🇰 香港节点, 🇯🇵 日本节点, 🇸🇬 狮城节点, 🇺🇲 美国节点, 🌐 全部节点, DIRECT]
+
+  - name: 📲 Telegram
+    type: select
+    proxies: [🔯 香港故转, 🔯 日本故转, 🔯 狮城故转, 🔯 美国故转, ♻️ 香港自动, ♻️ 日本自动, ♻️ 狮城自动, ♻️ 美国自动, ♻️ 自动选择, 🇭🇰 香港节点, 🇯🇵 日本节点, 🇸🇬 狮城节点, 🇺🇲 美国节点, 🌐 全部节点, DIRECT]
+
+  # [业务组] 微软服务
+  - name: 🐬 OneDrive
+    type: select
+    proxies: [DIRECT, 🔯 日本故转, 🔯 狮城故转, 🔯 美国故转, ♻️ 香港自动, ♻️ 日本自动, ♻️ 狮城自动, ♻️ 美国自动, ♻️ 自动选择, 🇭🇰 香港节点, 🇯🇵 日本节点, 🇸🇬 狮城节点, 🇺🇲 美国节点, 🌐 全部节点]
+
+  - name: 🪟 Microsoft
+    type: select
+    proxies: [DIRECT, 🔯 日本故转, 🔯 狮城故转, 🔯 美国故转, ♻️ 香港自动, ♻️ 日本自动, ♻️ 狮城自动, ♻️ 美国自动, ♻️ 自动选择, 🇭🇰 香港节点, 🇯🇵 日本节点, 🇸🇬 狮城节点, 🇺🇲 美国节点, 🌐 全部节点]
+
+  - name: 🐟 漏网之鱼
+    type: select
+    proxies: [🚀 默认代理, DIRECT]
+
+  # [底层组] 地区筛选 (Regex)
+  - name: 🇭🇰 香港节点
+    type: select
+    use: [MyAirport]
+    filter: "(?=.*(港|HK|(?i)Hong))^((?!(台|日|韩|新|深|美)).)*$"
+  
+  - name: 🇯🇵 日本节点
+    type: select
+    use: [MyAirport]
+    filter: "(?=.*(日|JP|(?i)Japan))^((?!(港|台|韩|新|美)).)*$"
+
+  - name: 🇸🇬 狮城节点
+    type: select
+    use: [MyAirport]
+    filter: "(?=.*(新加坡|坡|狮城|SG|Singapore))^((?!(台|日|韩|深|美)).)*$"
+
+  - name: 🇺🇲 美国节点
+    type: select
+    use: [MyAirport]
+    filter: "(?=.*(美|US|(?i)States|America))^((?!(港|台|韩|新|日)).)*$"
+  
+  # [底层组] 故障转移 (Fallback)
+  - name: 🔯 香港故转
+    type: fallback
+    use: [MyAirport]
+    interval: 300
+    url: 'http://www.gstatic.com/generate_204'
+    filter: "(?=.*(港|HK|(?i)Hong))^((?!(台|日|韩|新|深|美)).)*$"
+
+  - name: 🔯 日本故转
+    type: fallback
+    use: [MyAirport]
+    interval: 300
+    url: 'http://www.gstatic.com/generate_204'
+    filter: "(?=.*(日|JP|(?i)Japan))^((?!(港|台|韩|新|美)).)*$"
+
+  - name: 🔯 狮城故转
+    type: fallback
+    use: [MyAirport]
+    interval: 300
+    url: 'http://www.gstatic.com/generate_204'
+    filter: "(?=.*(新加坡|坡|狮城|SG|Singapore))^((?!(台|日|韩|深|美)).)*$"
+
+  - name: 🔯 美国故转
+    type: fallback
+    use: [MyAirport]
+    interval: 300
+    url: 'http://www.gstatic.com/generate_204'
+    filter: "(?=.*(美|US|(?i)States|America))^((?!(港|台|韩|新|日)).)*$"
+
+  # [底层组] 自动测速 (Url-Test)
+  - name: ♻️ 香港自动
+    type: url-test
+    use: [MyAirport]
+    tolerance: 20
+    interval: 300
+    url: 'http://www.gstatic.com/generate_204'
+    filter: "(?=.*(港|HK|(?i)Hong))^((?!(台|日|韩|新|深|美)).)*$"
+
+  - name: ♻️ 日本自动
+    type: url-test
+    use: [MyAirport]
+    tolerance: 20
+    interval: 300
+    url: 'http://www.gstatic.com/generate_204'
+    filter: "(?=.*(日|JP|(?i)Japan))^((?!(港|台|韩|新|美)).)*$"
+
+  - name: ♻️ 狮城自动
+    type: url-test
+    use: [MyAirport]
+    tolerance: 20
+    interval: 300
+    url: 'http://www.gstatic.com/generate_204'
+    filter: "(?=.*(新加坡|坡|狮城|SG|Singapore))^((?!(港|台|韩|日|美)).)*$"
+
+  - name: ♻️ 美国自动
+    type: url-test
+    use: [MyAirport]
+    tolerance: 20
+    interval: 300
+    url: 'http://www.gstatic.com/generate_204'
+    filter: "(?=.*(美|US|(?i)States|America))^((?!(港|台|日|韩|新)).)*$"
+
+  - name: ♻️ 自动选择
+    type: url-test
+    use: [MyAirport]
+    tolerance: 20
+    interval: 300
+    url: 'http://www.gstatic.com/generate_204'
+
+  - name: 🌐 全部节点
+    type: select
+    use: [MyAirport]
+
+# --- 5. 规则集配置 (已完全展开，防止锚点报错) ---
+rule-providers: 
+  private_domain:
+    type: http
+    interval: 86400
+    behavior: domain
+    format: mrs
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/private.mrs"
+  
+  proxylite:
+    type: http
+    interval: 86400
+    behavior: classical
+    format: mrs
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/proxy.mrs"
+  
+  ai:
+    type: http
+    interval: 86400
+    behavior: domain
+    format: mrs
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-ai-!cn.mrs"
+  
+  youtube_domain:
+    type: http
+    interval: 86400
+    behavior: domain
+    format: mrs
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/youtube.mrs"
+  
+  google_domain:
+    type: http
+    interval: 86400
+    behavior: domain
+    format: mrs
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/google.mrs"
+  
+  github_domain:
+    type: http
+    interval: 86400
+    behavior: domain
+    format: mrs
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/github.mrs"
+  
+  telegram_domain:
+    type: http
+    interval: 86400
+    behavior: domain
+    format: mrs
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/telegram.mrs"
+  
+  netflix_domain:
+    type: http
+    interval: 86400
+    behavior: domain
+    format: mrs
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/netflix.mrs"
+  
+  onedrive_domain:
+    type: http
+    interval: 86400
+    behavior: domain
+    format: mrs
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/onedrive.mrs"
+  
+  microsoft_domain:
+    type: http
+    interval: 86400
+    behavior: domain
+    format: mrs
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/microsoft.mrs"
+  
+  apple_domain:
+    type: http
+    interval: 86400
+    behavior: domain
+    format: mrs
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/apple.mrs"
+  
+  spotify:
+    type: http
+    interval: 86400
+    behavior: classical
+    format: mrs
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/spotify.mrs"
+  
+  emby:
+    type: http
+    interval: 86400
+    behavior: classical
+    format: mrs
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/emby.mrs"
+  
+  tiktok_domain:
+    type: http
+    interval: 86400
+    behavior: domain
+    format: mrs
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/tiktok.mrs"
+  
+  cn_domain:
+    type: http
+    interval: 86400
+    behavior: domain
+    format: mrs
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/cn.mrs"
+  
+  cn_ip:
+    type: http
+    interval: 86400
+    behavior: ipcidr
+    format: mrs
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/cn.mrs"
+
+# --- 6. 分流规则 ---
+rules:
+  - RULE-SET,private_domain,DIRECT
+  - RULE-SET,ai,🤖 AI
+  - RULE-SET,github_domain,👨🏿‍💻 GitHub
+  - RULE-SET,youtube_domain,📹 YouTube
+  - RULE-SET,google_domain,🍀 Google
+  - RULE-SET,onedrive_domain,🐬 OneDrive
+  - RULE-SET,microsoft_domain,🪟 Microsoft
+  - RULE-SET,tiktok_domain,🎵 TikTok
+  - RULE-SET,telegram_domain,📲 Telegram
+  - RULE-SET,spotify,🎵 Spotify
+  - RULE-SET,emby,🎬 Emby
+  - RULE-SET,netflix_domain,🎥 NETFLIX
+  - RULE-SET,apple_domain,DIRECT
+  - RULE-SET,proxylite,🚀 默认代理
+  - RULE-SET,cn_domain,DIRECT
+  - RULE-SET,cn_ip,DIRECT
+  - MATCH,🐟 漏网之鱼
