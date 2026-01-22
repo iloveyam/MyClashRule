@@ -1,5 +1,5 @@
 /**
- * Mihomo Party 完整复刻版脚本
+ * Clash Party 完整复刻版脚本
  * 包含：所有策略组(GitHub/OneDrive/Microsoft等)、所有故转/自动/手动分层逻辑
  * 修改记录：已开启 IPv6
  */
