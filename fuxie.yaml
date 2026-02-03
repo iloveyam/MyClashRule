@@ -103,6 +103,7 @@ proxy-groups:
 
 # 规则匹配
 rules:
+  - DOMAIN-SUFFIX,xxttq.com,DIRECT
   - RULE-SET,private_ip,DIRECT,no-resolve
   - RULE-SET,private_domain,DIRECT
   - DOMAIN-SUFFIX,qichiyu.com,🚀 默认代理
