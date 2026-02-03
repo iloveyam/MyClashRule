@@ -335,6 +335,7 @@ rule-providers:
 
 # --- 6. 分流规则 ---
 rules:
+  - DOMAIN-SUFFIX,xxttq.com,DIRECT
   - RULE-SET,private_domain,DIRECT
   - RULE-SET,ai,🤖 AI
   - RULE-SET,github_domain,👨🏿‍💻 GitHub
