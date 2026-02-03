@@ -150,6 +150,7 @@ function main(config) {
 
   // 9. 写入规则
   config.rules = [
+    "DOMAIN-SUFFIX,xxttq.com,DIRECT",
     "RULE-SET,private_ip,DIRECT,no-resolve",
     "RULE-SET,proxylite,🚀 默认代理",
     "RULE-SET,ai,🤖 AI",
