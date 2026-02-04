@@ -97,13 +97,13 @@ function main(config) {
     { name: G_US_Fall, type: "fallback", url: "http://www.gstatic.com/generate_204", interval: 300, proxies: us },
 
     // --- 地区自动组 (URL-Test) ---
-    { name: G_HK_Auto, type: "url-test", url: "http://www.gstatic.com/generate_204", interval: 300, tolerance: 20, proxies: hk },
-    { name: G_JP_Auto, type: "url-test", url: "http://www.gstatic.com/generate_204", interval: 300, tolerance: 20, proxies: jp },
-    { name: G_SG_Auto, type: "url-test", url: "http://www.gstatic.com/generate_204", interval: 300, tolerance: 20, proxies: sg },
-    { name: G_US_Auto, type: "url-test", url: "http://www.gstatic.com/generate_204", interval: 300, tolerance: 20, proxies: us },
+    { name: G_HK_Auto, type: "url-test", url: "http://www.gstatic.com/generate_204", interval: 1800, tolerance: 20, proxies: hk },
+    { name: G_JP_Auto, type: "url-test", url: "http://www.gstatic.com/generate_204", interval: 1800, tolerance: 20, proxies: jp },
+    { name: G_SG_Auto, type: "url-test", url: "http://www.gstatic.com/generate_204", interval: 1800, tolerance: 20, proxies: sg },
+    { name: G_US_Auto, type: "url-test", url: "http://www.gstatic.com/generate_204", interval: 1800, tolerance: 20, proxies: us },
     
     // --- 全局自动/全部 ---
-    { name: G_Global_Auto, type: "url-test", url: "http://www.gstatic.com/generate_204", interval: 300, tolerance: 20, proxies: all },
+    { name: G_Global_Auto, type: "url-test", url: "http://www.gstatic.com/generate_204", interval: 1800, tolerance: 20, proxies: all },
     { name: G_All, type: "select", proxies: all }
   ];
 
@@ -119,13 +119,13 @@ function main(config) {
     "fake-ip-filter": ["rule-set:fakeipfilter_domain"],
     "default-nameserver": ["https://223.5.5.5/dns-query"],
     nameserver: ["https://dns.alidns.com/dns-query", "https://doh.pub/dns-query"],
-    "proxy-server-nameserver": ["https://dns.alidns.com/dns-query", "https://doh.pub/dns-query"]
+    "proxy-server-nameserver": ["https://dns.alidns.com/dns-query", "https://doh.pub/dns-query","https://8.8.8.8/dns-query"]
   };
   
   // 8. 规则集引用
   config['rule-providers'] = {
     "fakeipfilter_domain": { type: "http", interval: 86400, behavior: "domain", format: "mrs", url: "https://raw.githubusercontent.com/wwqgtxx/clash-rules/release/fakeip-filter.mrs"},
-    "proxylite": { type: "http", interval: 86400, behavior: "classical", format: "text", url: "https://raw.githubusercontent.com/qichiyuhub/rule/refs/heads/main/proxy.list"},
+    "proxylite": { type: "http", interval: 86400, behavior: "classical", format: "text", url: "hthttps://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Proxy/Proxy.list"},
     "ai": { type: "http", interval: 86400, behavior: "domain", format: "mrs", url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-ai-!cn.mrs" },
     "youtube_domain": { type: "http", interval: 86400, behavior: "domain", format: "mrs", url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/youtube.mrs"},
     "google_domain": { type: "http", interval: 86400, behavior: "domain", format: "mrs", url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/google.mrs"},
