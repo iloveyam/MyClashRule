@@ -29,7 +29,7 @@ proxy-providers:
     type: http
     # 下面是你的订阅链接，如果失效请手动替换
     url: ""
-    interval: 3600
+    interval: 0
     path: ./proxies/airport.yaml
     health-check:
       enable: true
@@ -52,6 +52,7 @@ dns:
   nameserver:
     - https://dns.alidns.com/dns-query
     - https://doh.pub/dns-query
+    - https://8.8.8.8/dns-query
   fake-ip-filter:
     - '*'
     - '+.lan'
