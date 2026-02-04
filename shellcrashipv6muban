@@ -78,7 +78,7 @@ proxy-groups:
   - name: 📹 YouTube
     type: select
     proxies: [🔯 香港故转, 🔯 美国故转, 🔯 日本故转, 🔯 狮城故转, ♻️ 美国自动, ♻️ 香港自动, ♻️ 日本自动, ♻️ 狮城自动, ♻️ 自动选择, 🇭🇰 香港节点, 🇯🇵 日本节点, 🇸🇬 狮城节点, 🇺🇲 美国节点, 🌐 全部节点, DIRECT]
-  
+
   - name: 🎥 NETFLIX
     type: select
     proxies: [🔯 狮城故转, 🔯 香港故转, 🔯 日本故转, 🔯 美国故转, ♻️ 香港自动, ♻️ 日本自动, ♻️ 狮城自动, ♻️ 美国自动, ♻️ 自动选择, 🇭🇰 香港节点, 🇯🇵 日本节点, 🇸🇬 狮城节点, 🇺🇲 美国节点, 🌐 全部节点, DIRECT]
@@ -130,7 +130,7 @@ proxy-groups:
     type: select
     use: [MyAirport]
     filter: "(?=.*(港|HK|(?i)Hong))^((?!(台|日|韩|新|深|美)).)*$"
-  
+
   - name: 🇯🇵 日本节点
     type: select
     use: [MyAirport]
@@ -145,7 +145,7 @@ proxy-groups:
     type: select
     use: [MyAirport]
     filter: "(?=.*(美|US|(?i)States|America))^((?!(港|台|韩|新|日)).)*$"
-  
+
   # [底层组] 故障转移 (Fallback)
   - name: 🔯 香港故转
     type: fallback
@@ -227,105 +227,105 @@ rule-providers:
     behavior: domain
     format: mrs
     url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/private.mrs"
-  
+
   proxylite:
     type: http
     interval: 86400
     behavior: classical
     format: mrs
     url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/proxy.mrs"
-  
+
   ai:
     type: http
     interval: 86400
     behavior: domain
     format: mrs
     url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-ai-!cn.mrs"
-  
+
   youtube_domain:
     type: http
     interval: 86400
     behavior: domain
     format: mrs
     url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/youtube.mrs"
-  
+
   google_domain:
     type: http
     interval: 86400
     behavior: domain
     format: mrs
     url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/google.mrs"
-  
+
   github_domain:
     type: http
     interval: 86400
     behavior: domain
     format: mrs
     url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/github.mrs"
-  
+
   telegram_domain:
     type: http
     interval: 86400
     behavior: domain
     format: mrs
     url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/telegram.mrs"
-  
+
   netflix_domain:
     type: http
     interval: 86400
     behavior: domain
     format: mrs
     url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/netflix.mrs"
-  
+
   onedrive_domain:
     type: http
     interval: 86400
     behavior: domain
     format: mrs
     url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/onedrive.mrs"
-  
+
   microsoft_domain:
     type: http
     interval: 86400
     behavior: domain
     format: mrs
     url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/microsoft.mrs"
-  
+
   apple_domain:
     type: http
     interval: 86400
     behavior: domain
     format: mrs
     url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/apple.mrs"
-  
+
   spotify:
     type: http
     interval: 86400
     behavior: classical
     format: mrs
     url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/spotify.mrs"
-  
+
   emby:
     type: http
     interval: 86400
     behavior: classical
     format: mrs
     url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/emby.mrs"
-  
+
   tiktok_domain:
     type: http
     interval: 86400
     behavior: domain
     format: mrs
     url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/tiktok.mrs"
-  
+
   cn_domain:
     type: http
     interval: 86400
     behavior: domain
     format: mrs
     url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/cn.mrs"
-  
+
   cn_ip:
     type: http
     interval: 86400
@@ -353,101 +353,3 @@ rules:
   - RULE-SET,cn_domain,DIRECT
   - RULE-SET,cn_ip,DIRECT
   - MATCH,🐟 漏网之鱼
-[custom]
-; ===================================================
-; 1. 规则集配置 (Blackmatrix7 + IPv6 测试优化)
-; ===================================================
-
-; --- 强制国内 IPv6 直连 (速度最快) ---
-ruleset=🎯 全球直连,https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/ChinaIPs/ChinaIPs_IPv6.list
-
-; --- 局域网与基础直连 ---
-ruleset=🎯 全球直连,https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Lan/Lan.list
-ruleset=🎯 全球直连,https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/GoogleCN/GoogleCN.list
-ruleset=🎯 全球直连,https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/SteamCN/SteamCN.list
-
-; --- 广告与隐私 ---
-ruleset=🛑 广告拦截,https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Advertising/Advertising.list
-ruleset=🍃 应用净化,https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Privacy/Privacy.list
-
-; --- 关键应用分流 ---
-ruleset=🤖 AI,https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/GenerativeAI/GenerativeAI.list
-ruleset=📹 YouTube,https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/YouTube/YouTube.list
-ruleset=🍀 Google,https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Google/Google.list
-ruleset=🐬 OneDrive,https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/OneDrive/OneDrive.list
-ruleset=🪟 Microsoft,https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Microsoft/Microsoft.list
-ruleset=🍎 Apple,https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Apple/Apple.list
-ruleset=📲 Telegram,https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Telegram/Telegram.list
-ruleset=🎥 Netflix,https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Netflix/Netflix.list
-ruleset=🎵 Spotify,https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Spotify/Spotify.list
-ruleset=🎵 TikTok,https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/TikTok/TikTok.list
-ruleset=📢 FCM,https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/GoogleFCM/GoogleFCM.list
-ruleset=🎥 Emby,https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Emby/Emby.list
-
-; --- 媒体分流 ---
-ruleset=🎞️ 国内媒体,https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/ChinaMedia/ChinaMedia.list
-ruleset=🌍 国外媒体,https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/GlobalMedia/GlobalMedia.list
-
-; --- 地区与兜底 ---
-ruleset=🎯 全球直连,https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/China/China.list
-ruleset=🎯 全球直连,[]GEOSITE,CN
-ruleset=🚀 节点选择,[]GEOSITE,gfw
-ruleset=🚀 节点选择,[]GEOSITE,geolocation-!cn
-ruleset=🎯 全球直连,[]GEOIP,CN
-
-; --- [关键修改] 国外 IPv6 识别 ---
-; 识别所有剩余的 IPv6 流量，把它扔给“IPv6 测试”策略组
-ruleset=🛡️ IPv6 测试,[]IP-CIDR6,::/0
-
-; 最后兜底
-ruleset=🐟 漏网之鱼,[]FINAL
-
-
-; ===================================================
-; 2. 策略组定义 (分组已完整保留)
-; ===================================================
-
-; 自动测速 (主入口)
-custom_proxy_group=♻️ 自动选择`url-test`.*`http://www.google.com/generate_204`300,,50
-
-; 节点选择 (主入口)
-custom_proxy_group=🚀 节点选择`select`[]♻️ 自动选择`[]🇭🇰 香港节点`[]🇯🇵 日本节点`[]🇸🇬 新加坡节点`[]🇺🇲 美国节点`[]🌐 其他地区`[]🐸 手动切换`[]DIRECT
-
-; --- [关键修改] IPv6 测试专用组 ---
-; 1. 名字明确为“IPv6 测试”。
-; 2. 包含 .* (自动拉取所有节点)。
-; 3. 测试链接是 ipv6.google.com。
-; 4. 使用方法：点开这个组，按测速，绿色的就是通的。
-custom_proxy_group=🛡️ IPv6 测试`select`[]REJECT`[]DIRECT`.*`http://ipv6.google.com/generate_204`300
-
-; --- 其他原有分组 (完全保留) ---
-custom_proxy_group=🤖 AI`select`[]🇸🇬 新加坡节点`[]🇺🇲 美国节点`[]🇯🇵 日本节点`[]🌐 其他地区`[]🚀 节点选择`[]🐸 手动切换
-custom_proxy_group=🎥 Netflix`select`[]🎥 奈飞节点`[]🇸🇬 新加坡节点`[]🇺🇲 美国节点`[]🇯🇵 日本节点`[]🇭🇰 香港节点`[]🚀 节点选择`[]🐸 手动切换
-custom_proxy_group=🍀 Google`select`[]🚀 节点选择`[]🇭🇰 香港节点`[]🇯🇵 日本节点`[]🇸🇬 新加坡节点`[]🇺🇲 美国节点`[]🌐 其他地区`[]🐸 手动切换`[]DIRECT
-custom_proxy_group=📹 YouTube`select`[]🚀 节点选择`[]🇭🇰 香港节点`[]🇯🇵 日本节点`[]🇸🇬 新加坡节点`[]🇺🇲 美国节点`[]🌐 其他地区`[]🐸 手动切换`[]DIRECT
-custom_proxy_group=🐬 OneDrive`select`[]🎯 全球直连`[]🚀 节点选择`[]DIRECT
-custom_proxy_group=🪟 Microsoft`select`[]🎯 全球直连`[]🚀 节点选择`[]DIRECT
-custom_proxy_group=🍎 Apple`select`[]🎯 全球直连`[]🚀 节点选择`[]DIRECT
-custom_proxy_group=📲 Telegram`select`[]🚀 节点选择`[]🇸🇬 新加坡节点`[]🇺🇲 美国节点`[]🇭🇰 香港节点`[]🐸 手动切换
-custom_proxy_group=🎵 Spotify`select`[]🚀 节点选择`[]🇭🇰 香港节点`[]🇯🇵 日本节点`[]🇸🇬 新加坡节点`[]🇺🇲 美国节点`[]🌐 其他地区`[]🐸 手动切换`[]DIRECT
-custom_proxy_group=🎵 TikTok`select`[]🚀 节点选择`[]🇭🇰 香港节点`[]🇯🇵 日本节点`[]🇸🇬 新加坡节点`[]🇺🇲 美国节点`[]🌐 其他地区`[]🐸 手动切换`[]DIRECT
-custom_proxy_group=📢 FCM`select`[]🚀 节点选择`[]🇭🇰 香港节点`[]🇯🇵 日本节点`[]🇸🇬 新加坡节点`[]🇺🇲 美国节点`[]🌐 其他地区`[]🐸 手动切换`[]DIRECT
-custom_proxy_group=🎥 Emby`select`[]🚀 节点选择`[]🇭🇰 香港节点`[]🇯🇵 日本节点`[]🇸🇬 新加坡节点`[]🇺🇲 美国节点`[]🌐 其他地区`[]🐸 手动切换`[]DIRECT
-custom_proxy_group=🌍 国外媒体`select`[]🚀 节点选择`[]🇭🇰 香港节点`[]🇯🇵 日本节点`[]🇸🇬 新加坡节点`[]🇺🇲 美国节点`[]🐸 手动切换`[]DIRECT
-custom_proxy_group=🎞️ 国内媒体`select`[]DIRECT`[]🚀 节点选择`[]🐸 手动切换
-custom_proxy_group=🎯 全球直连`select`[]DIRECT`[]🚀 节点选择`[]🐸 手动切换
-custom_proxy_group=🛑 广告拦截`select`[]REJECT`[]DIRECT
-custom_proxy_group=🍃 应用净化`select`[]REJECT`[]DIRECT
-custom_proxy_group=🐟 漏网之鱼`select`[]🚀 节点选择`[]🇭🇰 香港节点`[]🇯🇵 日本节点`[]🇸🇬 新加坡节点`[]🇺🇲 美国节点`[]🌐 其他地区`[]🐸 手动切换`[]DIRECT
-
-; --- 正则筛选 (完全保留) ---
-custom_proxy_group=🐸 手动切换`select`.*
-custom_proxy_group=🇭🇰 香港节点`select`(?=.*(香港|HK|Hong Kong|🇭🇰|HongKong))^((?!(深港|US|家宽|游戏|剩余|流量|2.0|2倍|2x|3.0|3倍|3x|4.0|4倍|4x)).)*$
-custom_proxy_group=🇯🇵 日本节点`select`(?=.*(日本|川日|东京|大阪|泉日|埼玉|沪日|深日|JP|Japan))^((?!(家宽|游戏|剩余|流量|2.0|2倍|2x|3.0|3倍|3x|4.0|4倍|4x)).)*$
-custom_proxy_group=🇸🇬 新加坡节点`select`(?=.*(新加坡|坡|狮城|SG|Singapore))^((?!(家宽|游戏|剩余|流量|2.0|2倍|2x|3.0|3倍|3x|4.0|4倍|4x)).)*$
-custom_proxy_group=🇺🇲 美国节点`select`(美|波特兰|达拉斯|俄勒冈|凤凰城|费利蒙|硅谷|拉斯维加斯|洛杉矶|圣何塞|圣克拉拉|西雅图|芝加哥|US|United States)
-custom_proxy_group=🌐 其他地区`select`(^(?!.*(香港|HK|Hong Kong|🇭🇰|HongKong|日本|川日|东京|大阪|泉日|埼玉|沪日|深日|JP|Japan|新加坡|坡|狮城|SG|Singapore)).*)
-custom_proxy_group=🎥 奈飞节点`select`(NF|奈飞|解锁|Netflix|NETFLIX|Media)
-
-enable_rule_generator=true
-overwrite_original_rules=true
