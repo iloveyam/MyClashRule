@@ -85,7 +85,6 @@ dns:
   nameserver:
     - https://dns.alidns.com/dns-query
     - https://doh.pub/dns-query
-    # 增加一个备用，防止规则漏网的国外域名无法解析
     - https://8.8.8.8/dns-query
     
 # 出站策略
