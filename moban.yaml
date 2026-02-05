@@ -77,21 +77,24 @@ dns:
   respect-rules: true
   enhanced-mode: fake-ip
   fake-ip-range: 198.18.0.1/16
-  fake-ip-filter-mode: blacklist
   fake-ip-filter:
     - "rule-set:fakeipfilter_domain"
     - "+.lan"
     - "+.local"
+    - "+.msftconnecttest.com"
+    - "+.msftncsi.com"
   nameserver:
     - https://dns.alidns.com/dns-query
     - https://doh.pub/dns-query
     - https://8.8.8.8/dns-query
-    
+  proxy-server-nameserver:
+    - https://dns.alidns.com/dns-query
+
 # 出站策略
 proxy-groups:
 # --- 新增：IPv6 测试组 ---
   # 这个组使用 ipv6.google.com 进行测速，能通的节点即支持 IPv6
-  - {name: 🧪 IPv6 测试, type: select, include-all: true, url: "http://ipv6.google.com/generate_204", interval: 300}
+  - {name: 🧪 IPv6 测试, type: url-test, include-all: true, url: "http://ipv6.google.com/generate_204", interval: 1800, tolerance: 50}
   # -----------------------
   - {name: 🚀 默认代理, type: select, proxies: [🔯 香港故转, 🔯 日本故转, 🔯 狮城故转, 🔯 美国故转, ♻️ 香港自动, ♻️ 日本自动, ♻️ 狮城自动, ♻️ 美国自动, ♻️ 自动选择, 🇭🇰 香港节点, 🇯🇵 日本节点, 🇸🇬 狮城节点, 🇺🇲 美国节点, 🌐 全部节点, DIRECT]}
   - {name: 📹 YouTube, type: select, proxies: [🔯 美国故转, 🔯 香港故转, 🔯 日本故转, 🔯 狮城故转, ♻️ 美国自动, ♻️ 香港自动, ♻️ 日本自动, ♻️ 狮城自动, ♻️ 自动选择, 🇭🇰 香港节点, 🇯🇵 日本节点, 🇸🇬 狮城节点, 🇺🇲 美国节点, 🌐 全部节点, DIRECT]}
