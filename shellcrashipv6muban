@@ -342,6 +342,7 @@ rule-providers:
 # --- 6. 分流规则 ---
 rules:
   - DOMAIN-SUFFIX,xxttq.com,DIRECT
+  - DOMAIN-SUFFIX,beupisp.com,DIRECT
 # [新增] 显式局域网规则，防止流量回环
   - GEOSITE,private,DIRECT
   - GEOIP,private,DIRECT,no-resolve
