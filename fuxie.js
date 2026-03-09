@@ -87,7 +87,7 @@ function main(config) {
     { name: "📲 Telegram", type: "select", proxies: list_general },
     { name: "🎥 NETFLIX", type: "select", proxies: [G_SG_Fall, G_HK_Fall, G_JP_Fall, G_US_Fall, G_HK_Auto, G_JP_Auto, G_SG_Auto, G_US_Auto, G_Global_Auto, G_HK_Select, G_JP_Select, G_SG_Select, G_US_Select, G_All, "DIRECT"] },
     { name: "🎵 Spotify", type: "select", proxies: [G_US_Fall, G_SG_Fall, G_HK_Fall, G_JP_Fall, G_Global_Auto, G_All] },
-    { name: "🎬 Emby", type: "select", proxies: ["DIRECT", "🚀 默认代理", G_HK_Fall, G_SG_Fall, G_All] }, // 很多 Emby 是直连的，把 DIRECT 放在第一位或可选
+    { name: "🎬 Emby", type: "select", proxies: list_general },
     { name: "🐟 漏网之鱼", type: "select", proxies: ["🚀 默认代理", ...list_general] },
 
     // --- 地区选择组 (Manual) ---
