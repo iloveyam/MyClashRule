@@ -1,5 +1,5 @@
 # ==========================================================
-# ShellCrash 配置文件 (优化增强版)
+# ShellCrash 配置文件 (修正版 - 2026.03.23)
 # ==========================================================
 
 # --- 1. 基础设置 ---
@@ -8,7 +8,7 @@ redir-port: 7892
 tproxy-port: 7893
 allow-lan: true
 mode: Rule
-log-level: warning # 调低日志等级以减少系统开销
+log-level: warning
 ipv6: true
 external-controller: :9999
 external-ui: ui
@@ -34,7 +34,7 @@ profile:
 proxy-providers:
   MyAirport:
     type: http
-    url: "你的订阅链接" # 请在此填入链接
+    url: ""
     interval: 86400
     path: ./proxies/airport.yaml
     health-check:
@@ -70,8 +70,7 @@ proxy-groups:
   - name: 🧪 IPv6 测试
     type: select
     use: [MyAirport]
-    url: 'http://ipv6.google.com/generate_204'
-    interval: 300
+    # 注意：IPv6测试组建议保持 select 模式，手动切换节点进行体检
   
   - name: 🚀 默认代理
     type: select
@@ -79,7 +78,6 @@ proxy-groups:
 
   - name: 🤖 AI
     type: select
-    # 剔除香港节点，防止 ChatGPT 报错
     proxies: [🔯 美国故转, 🔯 日本故转, 🔯 狮城故转, ♻️ 日本自动, ♻️ 狮城自动, ♻️ 美国自动, ♻️ 自动选择, 🇯🇵 日本节点, 🇸🇬 狮城节点, 🇺🇲 美国节点, 🌐 全部节点]
 
   - name: 🍀 Google
@@ -100,7 +98,8 @@ proxy-groups:
   
   - name: 🍎 苹果服务
     type: select
-    proxies: [DIRECT，🔯 香港故转, 🔯 日本故转, 🔯 狮城故转, 🔯 美国故转, ♻️ 自动选择, 🇭🇰 香港节点, 🇯🇵 日本节点, 🇸🇬 狮城节点, 🇺🇲 美国节点, 🌐 全部节点]
+    # 修正了之前的全角逗号问题
+    proxies: [DIRECT, 🔯 香港故转, 🔯 日本故转, 🔯 狮城故转, 🔯 美国故转, ♻️ 自动选择, 🇭🇰 香港节点, 🇯🇵 日本节点, 🇸🇬 狮城节点, 🇺🇲 美国节点, 🌐 全部节点]
 
   - name: 👨🏿‍💻 GitHub
     type: select
@@ -112,11 +111,11 @@ proxy-groups:
 
   - name: 🐬 OneDrive
     type: select
-    proxies:  [DIRECT，🔯 香港故转, 🔯 日本故转, 🔯 狮城故转, 🔯 美国故转, ♻️ 自动选择, 🇭🇰 香港节点, 🇯🇵 日本节点, 🇸🇬 狮城节点, 🇺🇲 美国节点, 🌐 全部节点]
+    proxies: [DIRECT, 🔯 香港故转, 🔯 日本故转, 🔯 狮城故转, 🔯 美国故转, ♻️ 自动选择, 🇭🇰 香港节点, 🇯🇵 日本节点, 🇸🇬 狮城节点, 🇺🇲 美国节点, 🌐 全部节点]
 
   - name: 🪟 Microsoft
     type: select
-    proxies:  [DIRECT，🔯 香港故转, 🔯 日本故转, 🔯 狮城故转, 🔯 美国故转, ♻️ 自动选择, 🇭🇰 香港节点, 🇯🇵 日本节点, 🇸🇬 狮城节点, 🇺🇲 美国节点, 🌐 全部节点]
+    proxies: [DIRECT, 🔯 香港故转, 🔯 日本故转, 🔯 狮城故转, 🔯 美国故转, ♻️ 自动选择, 🇭🇰 香港节点, 🇯🇵 日本节点, 🇸🇬 狮城节点, 🇺🇲 美国节点, 🌐 全部节点]
 
   - name: 🎵 TikTok
     type: select
@@ -124,7 +123,7 @@ proxy-groups:
 
   - name: 🎵 Spotify
     type: select
-    proxies: [🔯 美国故转, 🔯 香港故转, 🔯 日本故转,🔯 狮城故转, ♻️ 自动选择, DIRECT]
+    proxies: [🔯 美国故转, 🔯 香港故转, 🔯 日本故转, 🔯 狮城故转, ♻️ 自动选择, DIRECT]
 
   - name: 🐟 漏网之鱼
     type: select
@@ -141,7 +140,7 @@ proxy-groups:
   - {name: 🔯 美国故转, type: fallback, use: [MyAirport], interval: 300, url: 'http://www.gstatic.com/generate_204', filter: "(?=.*(美|US|(?i)States|America))^((?!(港|台|韩|新|日)).)*$"}
   - {name: ♻️ 香港自动, type: url-test, use: [MyAirport], tolerance: 20, interval: 1800, filter: "(?=.*(港|HK|(?i)Hong))^((?!(台|日|韩|新|深|美)).)*$"}
   - {name: ♻️ 日本自动, type: url-test, use: [MyAirport], tolerance: 20, interval: 1800, filter: "(?=.*(日|JP|(?i)Japan))^((?!(港|台|韩|新|美)).)*$"}
-  - {name: ♻️ 狮城自动, type: url-test, use: [MyAirport], tolerance: 20, interval: 1800, filter: "(?=.*(新加坡|坡|狮城|SG|Singapore))^((?!(港|台|韩|日|美)).)*$"}
+  - {name: ♻️ 狮城自动, type: url-test, use: [MyAirport], tolerance: 20, interval: 1800, filter: "(?=.*(新加坡|坡|狮城|SG|Singapore))^((?!(台|日|韩|日|美)).)*$"}
   - {name: ♻️ 美国自动, type: url-test, use: [MyAirport], tolerance: 20, interval: 1800, filter: "(?=.*(美|US|(?i)States|America))^((?!(港|台|日|韩|新)).)*$"}
   - {name: ♻️ 自动选择, type: url-test, use: [MyAirport], tolerance: 20, interval: 1800}
   - {name: 🌐 全部节点, type: select, use: [MyAirport]}
