@@ -1,4 +1,4 @@
-# --- 基础设置 ---
+# --- 基础设置 (性能优化版) ---
 mixed-port: 7890
 redir-port: 7892
 tproxy-port: 7893
@@ -6,15 +6,27 @@ allow-lan: true
 mode: Rule
 log-level: info
 ipv6: true
-tun: {enable: true, stack: system, device: utun, auto-route: false, auto-detect-interface: false}
 unified-delay: true
 tcp-concurrent: true
+# 建议开启 udp，对游戏和视频通话更友好
+udp: true 
+
+tun:
+  enable: true
+  stack: system
+  device: utun
+  auto-route: true # 建议设为 true，自动接管系统流量
+  auto-detect-interface: true
+
 sniffer:
   enable: true
   parse-pure-ip: true
-  sniff: {HTTP: {ports: [80, 8080-8880], override-destination: true}, TLS: {ports: [443, 8443], override-destination: true}, QUIC: {ports: [443, 8443], override-destination: true}}
+  sniff:
+    HTTP: {ports: [80, 8080-8880], override-destination: true}
+    TLS: {ports: [443, 8443], override-destination: true}
+    QUIC: {ports: [443, 8443], override-destination: true}
 
-# --- DNS 设置 ---
+# --- DNS 设置 (防泄漏优化) ---
 dns:
   enable: true
   listen: :1053
@@ -25,11 +37,15 @@ dns:
   nameserver:
     - https://dns.alidns.com/dns-query
     - https://doh.pub/dns-query
-    - https://8.8.8.8/dns-query
+  proxy-server-nameserver:
+    - https://dns.alidns.com/dns-query
   nameserver-policy:
+    # 强制国内域名走国内 DNS
     "geosite:cn": [223.5.5.5, 119.29.29.29]
+    # 强制 AI 和主要海外服务走国外加密 DNS，防止污染
+    "geosite:category-ai-!cn,google,youtube,telegram,github": [https://8.8.8.8/dns-query, https://1.1.1.1/dns-query]
 
-# --- 策略组 (严格匹配原版顺序) ---
+# --- 策略组 (剔除 AI 组香港节点) ---
 proxy-groups:
   - name: 🧪 IPv6 测试
     type: select
@@ -39,56 +55,62 @@ proxy-groups:
 
   - name: 🚀 默认代理
     type: select
-    proxies: [🔯 香港故转, 🔯 日本故转, 🔯 狮城故转, 🔯 美国故转, ♻️ 香港自动, ♻️ 日本自动, ♻️ 狮城自动, ♻️ 美国自动, ♻️ 自动选择, 🇭🇰 香港节点, 🇯🇵 日本节点, 🇸🇬 狮城节点, 🇺🇲 美国节点, 🌐 全部节点, DIRECT]
+    proxies: [🔯 香港故转, 🔯 日本故转, 🔯 狮城故转, 🔯 美国故转, ♻️ 自动选择, 🇭🇰 香港节点, 🇯🇵 日本节点, 🇸🇬 狮城节点, 🇺🇲 美国节点, 🌐 全部节点, DIRECT]
 
   - name: 🤖 AI
     type: select
-    proxies: [🔯 美国故转, 🔯 日本故转, 🔯 狮城故转, ♻️ 香港自动, ♻️ 日本自动, ♻️ 狮城自动, ♻️ 美国自动, ♻️ 自动选择, 🇭🇰 香港节点, 🇯🇵 日本节点, 🇸🇬 狮城节点, 🇺🇲 美国节点, 🌐 全部节点, DIRECT]
+    # 注意：这里移除了香港节点，防止 ChatGPT 报错
+    proxies: [🔯 美国故转, 🔯 日本故转, 🔯 狮城故转, ♻️ 日本自动, ♻️ 狮城自动, ♻️ 美国自动, ♻️ 自动选择, 🇯🇵 日本节点, 🇸🇬 狮城节点, 🇺🇲 美国节点, 🌐 全部节点]
 
   - name: 🍀 Google
     type: select
-    proxies: [🔯 香港故转, 🔯 日本故转, 🔯 狮城故转, 🔯 美国故转, ♻️ 香港自动, ♻️ 日本自动, ♻️ 狮城自动, ♻️ 美国自动, ♻️ 自动选择, 🇭🇰 香港节点, 🇯🇵 日本节点, 🇸🇬 狮城节点, 🇺🇲 美国节点, 🌐 全部节点, DIRECT]
+    proxies: [🔯 香港故转, 🔯 日本故转, 🔯 狮城故转, 🔯 美国故转, ♻️ 自动选择, 🇭🇰 香港节点, 🇯🇵 日本节点, 🇸🇬 狮城节点, 🇺🇲 美国节点, DIRECT]
 
   - name: 📹 YouTube
     type: select
-    proxies: [🔯 香港故转, 🔯 美国故转, 🔯 日本故转, 🔯 狮城故转, ♻️ 美国自动, ♻️ 香港自动, ♻️ 日本自动, ♻️ 狮城自动, ♻️ 自动选择, 🇭🇰 香港节点, 🇯🇵 日本节点, 🇸🇬 狮城节点, 🇺🇲 美国节点, 🌐 全部节点, DIRECT]
+    proxies: [🔯 香港故转, 🔯 美国故转, ♻️ 美国自动, ♻️ 香港自动, ♻️ 自动选择, 🇭🇰 香港节点, 🇺🇲 美国节点, 🌐 全部节点]
 
   - name: 🎥 NETFLIX
     type: select
-    proxies: [🔯 狮城故转, 🔯 香港故转, 🔯 日本故转, 🔯 美国故转, ♻️ 香港自动, ♻️ 日本自动, ♻️ 狮城自动, ♻️ 美国自动, ♻️ 自动选择, 🇭🇰 香港节点, 🇯🇵 日本节点, 🇸🇬 狮城节点, 🇺🇲 美国节点, 🌐 全部节点, DIRECT]
+    proxies: [🔯 狮城故转, 🔯 香港故转, 🔯 日本故转, 🔯 美国故转, ♻️ 自动选择, 🇸🇬 狮城节点, 🇭🇰 香港节点, 🇯🇵 日本节点, 🇺🇲 美国节点]
 
   - name: 🎬 Emby
     type: select
-    proxies: [🔯 香港故转, 🔯 美国故转, 🔯 日本故转, 🔯 狮城故转, ♻️ 美国自动, ♻️ 香港自动, ♻️ 日本自动, ♻️ 狮城自动, ♻️ 自动选择, 🇭🇰 香港节点, 🇯🇵 日本节点, 🇸🇬 狮城节点, 🇺🇲 美国节点, 🌐 全部节点, DIRECT]
+    proxies: [DIRECT, 🔯 香港故转, 🔯 美国故转, ♻️ 自动选择, 🇭🇰 香港节点, 🌐 全部节点]
 
   - name: 🎵 TikTok
     type: select
-    proxies: [🔯 日本故转, 🔯 狮城故转, 🔯 美国故转, ♻️ 香港自动, ♻️ 日本自动, ♻️ 狮城自动, ♻️ 美国自动, ♻️ 自动选择, 🇭🇰 香港节点, 🇯🇵 日本节点, 🇸🇬 狮城节点, 🇺🇲 美国节点, 🌐 全部节点, DIRECT]
+    proxies: [🔯 日本故转, 🔯 狮城故转, 🔯 美国故转, ♻️ 自动选择, 🇯🇵 日本节点, 🇸🇬 狮城节点, 🇺🇲 美国节点]
 
   - name: 🎵 Spotify
     type: select
-    proxies: [🔯 美国故转, 🔯 香港故转, 🔯 狮城故转, 🔯 日本故转, ♻️ 自动选择, 🌐 全部节点, DIRECT]
+    proxies: [🔯 美国故转, 🔯 香港故转, 🔯 狮城故转, ♻️ 自动选择, 🌐 全部节点, DIRECT]
 
   - name: 👨🏿‍💻 GitHub
     type: select
-    proxies: [🔯 香港故转, 🔯 日本故转, 🔯 狮城故转, 🔯 美国故转, ♻️ 香港自动, ♻️ 日本自动, ♻️ 狮城自动, ♻️ 美国自动, ♻️ 自动选择, 🇭🇰 香港节点, 🇯🇵 日本节点, 🇸🇬 狮城节点, 🇺🇲 美国节点, 🌐 全部节点, DIRECT]
+    proxies: [🔯 香港故转, 🔯 日本故转, 🔯 美国故转, ♻️ 自动选择, 🇭🇰 香港节点, 🇯🇵 日本节点, 🇺🇲 美国节点, DIRECT]
 
   - name: 📲 Telegram
     type: select
-    proxies: [🔯 香港故转, 🔯 日本故转, 🔯 狮城故转, 🔯 美国故转, ♻️ 香港自动, ♻️ 日本自动, ♻️ 狮城自动, ♻️ 美国自动, ♻️ 自动选择, 🇭🇰 香港节点, 🇯🇵 日本节点, 🇸🇬 狮城节点, 🇺🇲 美国节点, 🌐 全部节点, DIRECT]
+    proxies: [🔯 香港故转, 🔯 日本故转, 🔯 狮城故转, 🔯 美国故转, ♻️ 自动选择, 🌐 全部节点]
+
+  - name: 🍎 苹果服务
+    type: select
+    proxies: [DIRECT, 🚀 默认代理, 🔯 香港故转, 🌐 全部节点]
 
   - name: 🐬 OneDrive
     type: select
-    proxies: [DIRECT, 🔯 日本故转, 🔯 狮城故转, 🔯 美国故转, ♻️ 香港自动, ♻️ 日本自动, ♻️ 狮城自动, ♻️ 美国自动, ♻️ 自动选择, 🇭🇰 香港节点, 🇯🇵 日本节点, 🇸🇬 狮城节点, 🇺🇲 美国节点, 🌐 全部节点]
+    proxies: [DIRECT, 🪟 Microsoft]
 
   - name: 🪟 Microsoft
     type: select
-    proxies: [DIRECT, 🔯 日本故转, 🔯 狮城故转, 🔯 美国故转, ♻️ 香港自动, ♻️ 日本自动, ♻️ 狮城自动, ♻️ 美国自动, ♻️ 自动选择, 🇭🇰 香港节点, 🇯🇵 日本节点, 🇸🇬 狮城节点, 🇺🇲 美国节点, 🌐 全部节点]
+    proxies: [DIRECT, 🔯 日本故转, 🔯 香港故转, ♻️ 自动选择, 🌐 全部节点]
 
   - name: 🐟 漏网之鱼
     type: select
     proxies: [🚀 默认代理, DIRECT]
 
+  # --- 基础节点组 (正则保持你的原版) ---
   - name: 🇭🇰 香港节点
     type: select
     use: [MyAirport]
@@ -180,23 +202,34 @@ proxy-groups:
     type: select
     use: [MyAirport]
 
-# --- 规则设置 (使用内置 Geo标签) ---
+# --- 规则设置 (优先级排序优化) ---
 rules:
+  # 1. 强制直连 (最快响应)
   - DOMAIN-SUFFIX,xxttq.com,DIRECT
   - DOMAIN-SUFFIX,beupisp.com,DIRECT
   - GEOSITE,private,DIRECT
   - GEOIP,private,DIRECT,no-resolve
+
+  # 2. AI 组 (高优先级，防止被后面的规则截留)
   - GEOSITE,category-ai-!cn,🤖 AI
+
+  # 3. 常见海外服务
   - GEOSITE,github,👨🏿‍💻 GitHub
   - GEOSITE,youtube,📹 YouTube
   - GEOSITE,google,🍀 Google
+  - GEOSITE,telegram,📲 Telegram
+  - GEOSITE,netflix,🎥 NETFLIX
+  - GEOSITE,tiktok,🎵 TikTok
+  - GEOSITE,spotify,🎵 Spotify
+
+  # 4. 办公与系统服务
   - GEOSITE,onedrive,🐬 OneDrive
   - GEOSITE,microsoft,🪟 Microsoft
-  - GEOSITE,tiktok,🎵 TikTok
-  - GEOSITE,telegram,📲 Telegram
-  - GEOSITE,spotify,🎵 Spotify
-  - GEOSITE,netflix,🎥 NETFLIX
-  - GEOSITE,apple,DIRECT
+  - GEOSITE,apple,🍎 苹果服务
+
+  # 5. 国内分流 (放在国外服务之后，提高性能)
   - GEOSITE,cn,DIRECT
   - GEOIP,cn,DIRECT,no-resolve
+
+  # 6. 兜底
   - MATCH,🐟 漏网之鱼
