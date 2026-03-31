@@ -1,5 +1,5 @@
 # ==========================================================
-# ShellCrash 配置文件 (修正版 - 2026.03.31)
+# ShellCrash 配置文件 (精修版 - 2026.03.31)
 # ==========================================================
 
 # --- 1. 基础设置 ---
@@ -34,7 +34,7 @@ profile:
 proxy-providers:
   MyAirport:
     type: http
-    url: ""
+    url: "你的订阅链接"
     interval: 86400
     path: ./proxies/airport.yaml
     health-check:
@@ -46,37 +46,30 @@ proxy-providers:
 dns:
   enable: true
   listen: :1053
-  use-hosts: true
   ipv6: true
-  default-nameserver: [ 223.5.5.5, 119.29.29.29 ]
   enhanced-mode: fake-ip
   fake-ip-range: 198.18.0.1/16
   respect-rules: true
-  nameserver-policy:
-    "geosite:cn": [223.5.5.5, 119.29.29.29]
-  proxy-server-nameserver: [https://dns.alidns.com/dns-query]
+  default-nameserver: [ 223.5.5.5, 119.29.29.29 ]
   nameserver:
     - https://dns.alidns.com/dns-query
     - https://doh.pub/dns-query
-    - https://8.8.8.8/dns-query
+  proxy-server-nameserver: [https://dns.alidns.com/dns-query]
+  nameserver-policy:
+    "geosite:cn": [223.5.5.5, 119.29.29.29]
   fake-ip-filter:
-    - '*'
-    - '+.lan'
-    - '+.local'
-    - 'geosite:cn'
+    - "*.lan"
+    - "*.local"
+    - "geosite:cn"
 
 # --- 4. 策略组 ---
 proxy-groups:
-    # --- IPv6 自动化拨测组 ---
   - name: 🧪 IPv6 测试
     type: url-test
     include-all: true
-    # 核心：使用纯 IPv6 地址的测试链接
     url: "https://ipv6.google.com/generate_204" 
     interval: 3600
     tolerance: 50
-    # 可选：如果节点太多，可以只过滤出你认为可能支持的，或者不过滤全部盲测
-    # filter: ".*"
   
   - name: 🚀 默认代理
     type: select
@@ -104,7 +97,6 @@ proxy-groups:
   
   - name: 🍎 苹果服务
     type: select
-    # 修正了之前的全角逗号问题
     proxies: [DIRECT, 🔯 香港故转, 🔯 日本故转, 🔯 狮城故转, 🔯 美国故转, ♻️ 自动选择, 🇭🇰 香港节点, 🇯🇵 日本节点, 🇸🇬 狮城节点, 🇺🇲 美国节点, 🌐 全部节点]
 
   - name: 👨🏿‍💻 GitHub
@@ -154,7 +146,7 @@ proxy-groups:
 # --- 5. 规则集配置 ---
 rule-providers: 
   private_domain: {type: http, interval: 86400, behavior: domain, format: mrs, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/private.mrs"}
-  proxylite: {type: http, interval: 86400, behavior: classical, format: mrs, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/geolocation-!cn.mrs"}
+  proxylite: {type: http, interval: 86400, behavior: domain, format: mrs, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/geolocation-!cn.mrs"}
   ai: {type: http, interval: 86400, behavior: domain, format: mrs, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-ai-!cn.mrs"}
   youtube_domain: {type: http, interval: 86400, behavior: domain, format: mrs, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/youtube.mrs"}
   google_domain: {type: http, interval: 86400, behavior: domain, format: mrs, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/google.mrs"}
@@ -164,8 +156,8 @@ rule-providers:
   onedrive_domain: {type: http, interval: 86400, behavior: domain, format: mrs, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/onedrive.mrs"}
   microsoft_domain: {type: http, interval: 86400, behavior: domain, format: mrs, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/microsoft.mrs"}
   apple_domain: {type: http, interval: 86400, behavior: domain, format: mrs, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/apple.mrs"}
-  spotify: {type: http, interval: 86400, behavior: classical, format: mrs, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/spotify.mrs"}
-  emby: {type: http, interval: 86400, behavior: classical, format: mrs, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-entertainment.mrs"}
+  spotify: {type: http, interval: 86400, behavior: domain, format: mrs, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/spotify.mrs"}
+  emby: {type: http, interval: 86400, behavior: domain, format: mrs, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-entertainment.mrs"}
   tiktok_domain: {type: http, interval: 86400, behavior: domain, format: mrs, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/tiktok.mrs"}
   cn_domain: {type: http, interval: 86400, behavior: domain, format: mrs, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/cn.mrs"}
   cn_ip: {type: http, interval: 86400, behavior: ipcidr, format: mrs, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/cn.mrs"}
