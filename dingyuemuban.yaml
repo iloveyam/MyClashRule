@@ -1,83 +1,87 @@
-# ===================================================
-# Mihomo (Clash Meta) 逻辑修复版 - 解决 DNS 劫持导致的上传失败
-# 核心逻辑：Fake-IP 强制接管 + 远程 DoH 纯净解析
-# ===================================================
+# 必读！！！
+# 此版本为整合 Apple 分流后的完整版。
+# 注意规则在满足自己需求情况下，尽量做到精简，不要过度复杂，以免影响性能。
+# 跑裸核用户请自行去掉下方控制面板模块的注释。
 
-# 1. 机场订阅
+# 机场订阅
 proxy-providers:
   Airport1:
-    url: "你的订阅链接" # 请填入
+    url: "https://appv2.nloli.xyz/tako_api/secure?token=0x0721013239693a786d4ced08b1adea259f88c0ddbf965232f1&addFlag=yes&vid=488fc7ce053"
     type: http
-    interval: 3600
+    interval: 0
     health-check:
       enable: true
       url: https://www.gstatic.com/generate_204
       interval: 300
     proxy: DIRECT
 
-# 2. 全局基础配置
+# 全局配置 
 mixed-port: 7890
 allow-lan: true
 bind-address: "*"
-ipv6: false # 逻辑：关闭 IPv6 减少 DNS 解析双栈干扰
+ipv6: true
 unified-delay: true
-tcp-concurrent: false # 逻辑：关闭并发，防止部分节点握手失败
-log-level: info
+tcp-concurrent: true
+log-level: warning
 global-client-fingerprint: chrome
-
+keep-alive-idle: 600
+keep-alive-interval: 15
 profile:
   store-selected: true
   store-fake-ip: true
 
-# 3. 嗅探逻辑：解决劫持的关键
-# 逻辑：在 Fake-IP 下，sniffer 负责还原真实的域名并匹配规则
+# 面板配置（如需开启请去掉下方注释）
+#external-controller: 0.0.0.0:9090
+#secret: ""
+#external-ui: ui
+#external-ui-name: zashboard
+#external-ui-url: "https://github.com/Zephyruso/zashboard/archive/refs/heads/gh-pages.zip"
+
+# 嗅探
 sniffer:
   enable: true
   sniff:
     HTTP:
       ports: [80, 8080-8880]
-      override-destination: true 
+      override-destination: true
     TLS:
       ports: [443, 8443]
-      override-destination: true
     QUIC:
       ports: [443, 8443]
   skip-domain:
     - "Mijia Cloud"
     - "+.push.apple.com"
 
-# 4. 入站设置
+# 入站
 tun:
   enable: true
   stack: mixed
   dns-hijack: ["any:53", "tcp://any:53"]
-  auto-route: true
-  auto-detect-interface: true
+  auto-route: false
+  auto-redirect: false
+  auto-detect-interface: false
 
-# 5. DNS 模块：这是修复你日志报错的核心
-# 逻辑：切回 fake-ip 并使用 respect-rules，强制让 DNS 请求也走代理通道
+# DNS模块
 dns:
   enable: true
   cache-algorithm: arc
   listen: 0.0.0.0:1053
-  ipv6: false
-  respect-rules: true       # 逻辑：让 DNS 遵循规则分流，防止解析请求被运营商拦截
-  enhanced-mode: fake-ip    # 逻辑：用 Fake-IP 避开本地污染
+  ipv6: true
+  respect-rules: true
+  enhanced-mode: fake-ip
   fake-ip-range: 198.18.0.1/16
+  fake-ip-filter-mode: blacklist
   fake-ip-filter:
+    - "rule-set:fakeipfilter_domain"
     - "+.lan"
     - "+.local"
-    - "+.direct"
-    - "+.msftncsi.com" # 防止 Windows 网络状态检测异常
+  
+  # 默认解析（兜底用）
   default-nameserver:
     - 223.5.5.5
-  proxy-server-nameserver:
-    - https://dns.alidns.com/dns-query
-  nameserver:
-    - https://dns.alidns.com/dns-query
-    - https://doh.pub/dns-query # 阿里加密 DNS，防止被劫持成“斗鱼”
+    - 119.29.29.29
 
-# 6. 出站策略组 (保持你的原有排序)
+# 出站策略
 proxy-groups:
   - {name: 🧪 IPv6 测试, type: select, include-all: true, url: "http://ipv6.google.com/generate_204", interval: 300}
   - {name: 🚀 默认代理, type: select, proxies: [🔯 香港故转, 🔯 日本故转, 🔯 狮城故转, 🔯 美国故转, ♻️ 香港自动, ♻️ 日本自动, ♻️ 狮城自动, ♻️ 美国自动, ♻️ 自动选择, 🇭🇰 香港节点, 🇯🇵 日本节点, 🇸🇬 狮城节点, 🇺🇲 美国节点, 🌐 全部节点, DIRECT]}
@@ -95,6 +99,7 @@ proxy-groups:
   - {name: 🎬 Emby, type: select, proxies: [DIRECT, 🚀 默认代理, 🔯 香港故转, 🔯 狮城故转, 🌐 全部节点]}
   - {name: 🐟 漏网之鱼, type: select, proxies: [🚀 默认代理, 🔯 香港故转, 🔯 日本故转, 🔯 狮城故转, 🔯 美国故转, ♻️ 香港自动, ♻️ 日本自动, ♻️ 狮城自动, ♻️ 美国自动, ♻️ 自动选择, 🇭🇰 香港节点, 🇯🇵 日本节点, 🇸🇬 狮城节点, 🇺🇲 美国节点, 🌐 全部节点, DIRECT]}
   
+  # 基础正则过滤组
   - {name: 🇭🇰 香港节点, type: select, include-all: true, filter: "(?=.*(港|HK|(?i)Hong))^((?!(台|日|韩|新|深|美)).)*$"}
   - {name: 🇯🇵 日本节点, type: select, include-all: true, filter: "(?=.*(日|JP|(?i)Japan))^((?!(港|台|韩|新|美)).)*$"}
   - {name: 🇸🇬 狮城节点, type: select, include-all: true, filter: "(?=.*(新加坡|坡|狮城|SG|Singapore))^((?!(台|日|韩|深|美)).)*$"}
@@ -110,13 +115,10 @@ proxy-groups:
   - {name: ♻️ 自动选择, type: url-test, include-all: true, tolerance: 20, interval: 300, filter: "^((?!(DIRECT)).)*$"}
   - {name: 🌐 全部节点, type: select, include-all: true}
 
-# 7. 规则逻辑：纠正分流优先级
+# 规则匹配
 rules:
   - DOMAIN-SUFFIX,xxttq.com,DIRECT
   - DOMAIN-SUFFIX,beupisp.com,DIRECT
-  - DOMAIN-SUFFIX,asusrouter.com,DIRECT
-
-  # 基础分流
   - RULE-SET,private_ip,DIRECT,no-resolve
   - RULE-SET,private_domain,DIRECT
   - RULE-SET,proxylite,🚀 默认代理
@@ -132,22 +134,16 @@ rules:
   - RULE-SET,netflix_domain,🎥 NETFLIX
   - RULE-SET,spotify_domain,🎵 Spotify
   - RULE-SET,emby_domain,🎬 Emby
-
-  # IP 分流
   - RULE-SET,apple_ip,🍎 Apple
   - RULE-SET,google_ip,🍀 Google
   - RULE-SET,netflix_ip,🎥 NETFLIX
   - RULE-SET,telegram_ip,📲 Telegram
-
-  # 逻辑补丁：将国外通用拦截提前，强制抓捕漏网 CDN
   - RULE-SET,geolocation-!cn,🚀 默认代理
-  
-  # 国内直连和兜底
   - RULE-SET,cn_domain,DIRECT
   - RULE-SET,cn_ip,DIRECT
   - MATCH,🐟 漏网之鱼
 
-# 8. 规则集定义 (MRS 格式)
+# 规则集定义
 rule-anchor:
   ip: &ip {type: http, interval: 86400, behavior: ipcidr, format: mrs}
   domain: &domain {type: http, interval: 86400, behavior: domain, format: mrs}
