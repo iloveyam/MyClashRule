@@ -1,9 +1,12 @@
-# Mihomo (Clash Meta) 完整优化版
-# 优化点：增强图片/CDN上传分流、修正DNS解析逻辑、提升嗅探准确度
+# ===================================================
+# Mihomo (Clash Meta) 逻辑修复版 - 解决 DNS 劫持导致的上传失败
+# 核心逻辑：Fake-IP 强制接管 + 远程 DoH 纯净解析
+# ===================================================
 
+# 1. 机场订阅
 proxy-providers:
   Airport1:
-    url: "你的订阅链接" # 请记得填入链接并定期重置Token
+    url: "你的订阅链接" # 请填入
     type: http
     interval: 3600
     health-check:
@@ -12,26 +15,28 @@ proxy-providers:
       interval: 300
     proxy: DIRECT
 
+# 2. 全局基础配置
 mixed-port: 7890
 allow-lan: true
 bind-address: "*"
-ipv6: true
+ipv6: false # 逻辑：关闭 IPv6 减少 DNS 解析双栈干扰
 unified-delay: true
-tcp-concurrent: true
-log-level: warning
+tcp-concurrent: false # 逻辑：关闭并发，防止部分节点握手失败
+log-level: info
 global-client-fingerprint: chrome
 
 profile:
   store-selected: true
   store-fake-ip: true
 
-# 嗅探增强：解决图片上传 CDN 识别问题
+# 3. 嗅探逻辑：解决劫持的关键
+# 逻辑：在 Fake-IP 下，sniffer 负责还原真实的域名并匹配规则
 sniffer:
   enable: true
   sniff:
     HTTP:
       ports: [80, 8080-8880]
-      override-destination: true
+      override-destination: true 
     TLS:
       ports: [443, 8443]
       override-destination: true
@@ -41,6 +46,7 @@ sniffer:
     - "Mijia Cloud"
     - "+.push.apple.com"
 
+# 4. 入站设置
 tun:
   enable: true
   stack: mixed
@@ -48,26 +54,30 @@ tun:
   auto-route: true
   auto-detect-interface: true
 
+# 5. DNS 模块：这是修复你日志报错的核心
+# 逻辑：切回 fake-ip 并使用 respect-rules，强制让 DNS 请求也走代理通道
 dns:
   enable: true
   cache-algorithm: arc
   listen: 0.0.0.0:1053
-  ipv6: true
-  respect-rules: true
-  enhanced-mode: fake-ip
+  ipv6: false
+  respect-rules: true       # 逻辑：让 DNS 遵循规则分流，防止解析请求被运营商拦截
+  enhanced-mode: fake-ip    # 逻辑：用 Fake-IP 避开本地污染
   fake-ip-range: 198.18.0.1/16
   fake-ip-filter:
-    - "rule-set:fakeipfilter_domain"
     - "+.lan"
     - "+.local"
+    - "+.direct"
+    - "+.msftncsi.com" # 防止 Windows 网络状态检测异常
   default-nameserver:
     - 223.5.5.5
   proxy-server-nameserver:
     - https://dns.alidns.com/dns-query
   nameserver:
     - https://dns.alidns.com/dns-query
-    - https://doh.pub/dns-query
+    - https://doh.pub/dns-query # 阿里加密 DNS，防止被劫持成“斗鱼”
 
+# 6. 出站策略组 (保持你的原有排序)
 proxy-groups:
   - {name: 🧪 IPv6 测试, type: select, include-all: true, url: "http://ipv6.google.com/generate_204", interval: 300}
   - {name: 🚀 默认代理, type: select, proxies: [🔯 香港故转, 🔯 日本故转, 🔯 狮城故转, 🔯 美国故转, ♻️ 香港自动, ♻️ 日本自动, ♻️ 狮城自动, ♻️ 美国自动, ♻️ 自动选择, 🇭🇰 香港节点, 🇯🇵 日本节点, 🇸🇬 狮城节点, 🇺🇲 美国节点, 🌐 全部节点, DIRECT]}
@@ -78,7 +88,7 @@ proxy-groups:
   - {name: 🍎 Apple, type: select, proxies: [DIRECT, 🚀 默认代理, 🔯 香港故转, 🔯 日本故转, 🔯 狮城故转, 🔯 美国故转, 🌐 全部节点]}
   - {name: 🐬 OneDrive, type: select, proxies: [🔯 日本故转, 🔯 狮城故转, 🔯 美国故转, ♻️ 香港自动, ♻️ 日本自动, ♻️ 狮城自动, ♻️ 美国自动, ♻️ 自动选择, 🇭🇰 香港节点, 🇯🇵 日本节点, 🇸🇬 狮城节点, 🇺🇲 美国节点, 🌐 全部节点, DIRECT]}
   - {name: 🪟 Microsoft, type: select, proxies: [🔯 日本故转, 🔯 狮城故转, 🔯 美国故转, ♻️ 香港自动, ♻️ 日本自动, ♻️ 狮城自动, ♻️ 美国自动, ♻️ 自动选择, 🇭🇰 香港节点, 🇯🇵 日本节点, 🇸🇬 狮城节点, 🇺🇲 美国节点, 🌐 全部节点, DIRECT]}
-  - {name: 🎵 TikTok, type: select, proxies: [🔯 日本故转, 🔯 狮城故转, 🔯 美国故转, ♻️ 香港自动, ♻️ 日本自动, ♻️ 狮城自动, ♻️ 美国自动, ♻️ 自动选择, 🇯🇵 日本节点, 🇸🇬 狮城节点, 🇺🇲 美国节点, 🌐 全部节点, DIRECT]}
+  - {name: 🎵 TikTok, type: select, proxies: [🔯 日本故转, 🔯 狮城故转, 🔯 美国故转, ♻️ 香港自动, ♻️ 日本自动, ♻️ 狮城自动, ♻️ 美国自动, ♻️ 自动选择, 🇭🇰 香港节点, 🇯🇵 日本节点, 🇸🇬 狮城节点, 🇺🇲 美国节点, 🌐 全部节点, DIRECT]}
   - {name: 📲 Telegram, type: select, proxies: [🔯 香港故转, 🔯 日本故转, 🔯 狮城故转, 🔯 美国故转, ♻️ 香港自动, ♻️ 日本自动, ♻️ 狮城自动, ♻️ 美国自动, ♻️ 自动选择, 🇭🇰 香港节点, 🇯🇵 日本节点, 🇸🇬 狮城节点, 🇺🇲 美国节点, 🌐 全部节点, DIRECT]}
   - {name: 🎥 NETFLIX, type: select, proxies: [🔯 狮城故转, 🔯 香港故转, 🔯 日本故转, 🔯 美国故转, ♻️ 香港自动, ♻️ 日本自动, ♻️ 狮城自动, ♻️ 美国自动, ♻️ 自动选择, 🇭🇰 香港节点, 🇯🇵 日本节点, 🇸🇬 狮城节点, 🇺🇲 美国节点, 🌐 全部节点, DIRECT]}
   - {name: 🎵 Spotify, type: select, proxies: [🔯 美国故转, 🔯 狮城故转, 🔯 香港故转, 🔯 日本故转, ♻️ 自动选择, 🌐 全部节点]}
@@ -100,15 +110,13 @@ proxy-groups:
   - {name: ♻️ 自动选择, type: url-test, include-all: true, tolerance: 20, interval: 300, filter: "^((?!(DIRECT)).)*$"}
   - {name: 🌐 全部节点, type: select, include-all: true}
 
+# 7. 规则逻辑：纠正分流优先级
 rules:
   - DOMAIN-SUFFIX,xxttq.com,DIRECT
   - DOMAIN-SUFFIX,beupisp.com,DIRECT
-  # --- 新增：强制代理常用上传/CDN 域名，解决上传失败 ---
-  - DOMAIN-KEYWORD,upload,🚀 默认代理
-  - DOMAIN-KEYWORD,cloudinary,🚀 默认代理
-  - DOMAIN-KEYWORD,s3,🚀 默认代理
-  - DOMAIN-KEYWORD,tos-s3,🚀 默认代理
-  # -----------------------------------------------
+  - DOMAIN-SUFFIX,asusrouter.com,DIRECT
+
+  # 基础分流
   - RULE-SET,private_ip,DIRECT,no-resolve
   - RULE-SET,private_domain,DIRECT
   - RULE-SET,proxylite,🚀 默认代理
@@ -124,16 +132,22 @@ rules:
   - RULE-SET,netflix_domain,🎥 NETFLIX
   - RULE-SET,spotify_domain,🎵 Spotify
   - RULE-SET,emby_domain,🎬 Emby
+
+  # IP 分流
   - RULE-SET,apple_ip,🍎 Apple
   - RULE-SET,google_ip,🍀 Google
   - RULE-SET,netflix_ip,🎥 NETFLIX
   - RULE-SET,telegram_ip,📲 Telegram
-  # 调整顺序：优先拦截国外通用流量，再处理国内直连
+
+  # 逻辑补丁：将国外通用拦截提前，强制抓捕漏网 CDN
   - RULE-SET,geolocation-!cn,🚀 默认代理
+  
+  # 国内直连和兜底
   - RULE-SET,cn_domain,DIRECT
   - RULE-SET,cn_ip,DIRECT
   - MATCH,🐟 漏网之鱼
 
+# 8. 规则集定义 (MRS 格式)
 rule-anchor:
   ip: &ip {type: http, interval: 86400, behavior: ipcidr, format: mrs}
   domain: &domain {type: http, interval: 86400, behavior: domain, format: mrs}
