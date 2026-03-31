@@ -73,7 +73,7 @@ proxy-groups:
     include-all: true
     # 核心：使用纯 IPv6 地址的测试链接
     url: "https://ipv6.google.com/generate_204" 
-    interval: 300
+    interval: 3600
     tolerance: 50
     # 可选：如果节点太多，可以只过滤出你认为可能支持的，或者不过滤全部盲测
     # filter: ".*"
