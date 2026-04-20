@@ -17,8 +17,6 @@ profile:
   store-selected: true
   store-fake-ip: true
 
-# 注意：此处彻底删除了 tun 模块。请在 ShellCrash 的菜单中选择流量劫持模式（TProxy 或 Tun）。
-
 # ================= 嗅探配置 (简化防干扰) =================
 sniffer:
   enable: true
@@ -99,20 +97,19 @@ proxy-groups:
       - 美国
       - 新加坡
       - 台湾省
-     
 
   - name: 节点选择
     type: select
     include-all: true
     filter: '(?i)(港|🇭🇰|HK|Hong|日|🇯🇵|JP|Japan|美|🇺🇸|US|America|新|🇸🇬|SG|Singapore|台|🇹🇼|TW|Tai|倍)'
-    exclude-filter: '(?i)群|返利|循环|官网|客服|网站|网址|获取|订阅|流量|到期|机场|下次|版本|备用|过期|已用|联系|邮箱|通知|防|剩余|维护|说明|提示|警告|⚠️'
+    exclude-filter: '(?i)群|返利|循环|官网|客服|网站|网址|获取|订阅|流量|到期|机场|下次|版本|备用|过期|已用|联系|邮箱|通知|防|剩余|维护|说明|提示|警告|⚠️|COMPATIBLE'
 
-# --- IPv6 测速组 ---
+  # --- IPv6 测速组 ---
   - name: IPv6测试
     type: select
     include-all: true
     filter: '(?i)(港|🇭🇰|HK|Hong|日|🇯🇵|JP|Japan|美|🇺🇸|US|America|新|🇸🇬|SG|Singapore|台|🇹🇼|TW|Tai|倍)'
-    exclude-filter: '(?i)群|返利|循环|官网|客服|网站|网址|获取|订阅|流量|到期|机场|下次|版本|备用|过期|已用|联系|邮箱|通知|防|剩余|维护|说明|提示|警告|⚠️'
+    exclude-filter: '(?i)群|返利|循环|官网|客服|网站|网址|获取|订阅|流量|到期|机场|下次|版本|备用|过期|已用|联系|邮箱|通知|防|剩余|维护|说明|提示|警告|⚠️|COMPATIBLE'
     url: "http://ipv6.google.com/generate_204"
     interval: 3600
     icon: "https://github.com/DustinWin/ruleset_geodata/releases/download/icons/ipdb.png"
@@ -153,38 +150,37 @@ proxy-groups:
     type: select
     proxies: ["🇨🇳 直连 | 双栈", "🇨🇳 直连 | IPv4优先", "🇨🇳 直连 | IPv6优先"]
 
-# --- 地区与倍率节点组 ---
+  # --- 地区与倍率节点组 ---
   - name: 香港
     type: url-test
     include-all: true
     tolerance: 50
     filter: "(?i)(港|🇭🇰|HK|Hong Kong)"
-    exclude-filter: '(?i)群|剩余|到期|官网|流量'
+    exclude-filter: '(?i)群|剩余|到期|官网|流量|COMPATIBLE'
   - name: 日本
     type: url-test
     include-all: true
     tolerance: 50
     filter: "(?i)(日本|🇯🇵|JP|Japan)"
-    exclude-filter: '(?i)群|剩余|到期|官网|流量'
+    exclude-filter: '(?i)群|剩余|到期|官网|流量|COMPATIBLE'
   - name: 美国
     type: url-test
     include-all: true
     tolerance: 50
     filter: "(?i)(美|🇺🇸|US|America|United States)"
-    exclude-filter: '(?i)群|剩余|到期|官网|流量'
+    exclude-filter: '(?i)群|剩余|到期|官网|流量|COMPATIBLE'
   - name: 新加坡
     type: url-test
     include-all: true
     tolerance: 50
     filter: "(?i)(新加坡|狮城|🇸🇬|SG|Singapore)"
-    exclude-filter: '(?i)群|剩余|到期|官网|流量'
+    exclude-filter: '(?i)群|剩余|到期|官网|流量|COMPATIBLE'
   - name: 台湾省
     type: url-test
     include-all: true
     tolerance: 50
     filter: "(?i)(台湾|🇹🇼|TW|Tai Wan)"
-    exclude-filter: '(?i)群|剩余|到期|官网|流量'
-  
+    exclude-filter: '(?i)群|剩余|到期|官网|流量|COMPATIBLE'
 
 # ================= 规则集 Providers =================
 rule-providers:
