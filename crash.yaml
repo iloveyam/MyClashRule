@@ -107,9 +107,10 @@ proxy-groups:
     filter: '(?i)(港|🇭🇰|HK|Hong|日|🇯🇵|JP|Japan|美|🇺🇸|US|America|新|🇸🇬|SG|Singapore|台|🇹🇼|TW|Tai|倍)'
     exclude-filter: '(?i)群|返利|循环|官网|客服|网站|网址|获取|订阅|流量|到期|机场|下次|版本|备用|过期|已用|联系|邮箱|通知|防|剩余|维护|说明|提示|警告|⚠️'
 
-  # --- IPv6 测速组 ---
+# --- IPv6 测速组 ---
   - name: IPv6测试
     type: select
+    include-all: true
     filter: '(?i)(港|🇭🇰|HK|Hong|日|🇯🇵|JP|Japan|美|🇺🇸|US|America|新|🇸🇬|SG|Singapore|台|🇹🇼|TW|Tai|倍)'
     exclude-filter: '(?i)群|返利|循环|官网|客服|网站|网址|获取|订阅|流量|到期|机场|下次|版本|备用|过期|已用|联系|邮箱|通知|防|剩余|维护|说明|提示|警告|⚠️'
     url: "http://ipv6.google.com/generate_204"
