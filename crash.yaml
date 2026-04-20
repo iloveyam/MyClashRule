@@ -152,33 +152,37 @@ proxy-groups:
     type: select
     proxies: ["🇨🇳 直连 | 双栈", "🇨🇳 直连 | IPv4优先", "🇨🇳 直连 | IPv6优先"]
 
-  # --- 地区与倍率节点组 ---
+# --- 地区与倍率节点组 ---
   - name: 香港
     type: url-test
+    include-all: true
     tolerance: 50
     filter: "(?i)(港|🇭🇰|HK|Hong Kong)"
     exclude-filter: '(?i)群|剩余|到期|官网|流量'
   - name: 日本
     type: url-test
+    include-all: true
     tolerance: 50
     filter: "(?i)(日本|🇯🇵|JP|Japan)"
     exclude-filter: '(?i)群|剩余|到期|官网|流量'
   - name: 美国
     type: url-test
+    include-all: true
     tolerance: 50
     filter: "(?i)(美|🇺🇸|US|America|United States)"
     exclude-filter: '(?i)群|剩余|到期|官网|流量'
   - name: 新加坡
     type: url-test
+    include-all: true
     tolerance: 50
     filter: "(?i)(新加坡|狮城|🇸🇬|SG|Singapore)"
     exclude-filter: '(?i)群|剩余|到期|官网|流量'
   - name: 台湾省
     type: url-test
+    include-all: true
     tolerance: 50
     filter: "(?i)(台湾|🇹🇼|TW|Tai Wan)"
     exclude-filter: '(?i)群|剩余|到期|官网|流量'
- 
   
 
 # ================= 规则集 Providers =================
