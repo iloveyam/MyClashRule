@@ -179,16 +179,8 @@ proxy-groups:
     tolerance: 50
     filter: "(?i)(台湾|🇹🇼|TW|Tai Wan)"
     exclude-filter: '(?i)群|剩余|到期|官网|流量'
-  - name: 低倍率节点
-    type: url-test
-    tolerance: 50
-    filter: '(?i)(0\.[0-5]|下载|低倍)'
-    exclude-filter: '(?i)群|剩余|到期|官网|流量'
-  - name: 高倍率节点
-    type: url-test
-    tolerance: 50
-    filter: '(?i)(倍|[*×xX✕✖⨉])'
-    exclude-filter: '(?i)群|剩余|到期|官网|流量|(0\.[0-5])'
+ 
+  
 
 # ================= 规则集 Providers =================
 rule-providers:
