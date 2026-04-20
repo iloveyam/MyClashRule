@@ -99,8 +99,7 @@ proxy-groups:
       - 美国
       - 新加坡
       - 台湾省
-      - 低倍率节点
-      - 高倍率节点
+     
 
   - name: 节点选择
     type: select
